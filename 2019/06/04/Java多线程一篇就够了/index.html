@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java多线程一篇就够了 | zzuhai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JAVA  线程实现/创建方式继承Thread类1234567public class MyThread extends Thread &amp;#123;    public void run() &amp;#123;        System.out.println(&amp;quot;MyThread.run()&amp;quot;);    &amp;#125;&amp;#125;MyThread myThread1 = new My">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java多线程一篇就够了">
+<meta property="og:url" content="http://zzuhai.github.io/2019/06/04/Java多线程一篇就够了/index.html">
+<meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="JAVA  线程实现/创建方式继承Thread类1234567public class MyThread extends Thread &amp;#123;    public void run() &amp;#123;        System.out.println(&amp;quot;MyThread.run()&amp;quot;);    &amp;#125;&amp;#125;MyThread myThread1 = new My">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/Zhangzuhai/gitrepository/raw/master/thread.jpg">
+<meta property="og:image" content="https://github.com/Zhangzuhai/gitrepository/raw/master/threadmethod.png">
+<meta property="og:updated_time" content="2019-06-04T06:49:55.297Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java多线程一篇就够了">
+<meta name="twitter:description" content="JAVA  线程实现/创建方式继承Thread类1234567public class MyThread extends Thread &amp;#123;    public void run() &amp;#123;        System.out.println(&amp;quot;MyThread.run()&amp;quot;);    &amp;#125;&amp;#125;MyThread myThread1 = new My">
+<meta name="twitter:image" content="https://github.com/Zhangzuhai/gitrepository/raw/master/thread.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">zzuhai</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://zzuhai.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Java多线程一篇就够了" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/Java多线程一篇就够了/" class="article-date">
+  <time datetime="2019-06-04T06:46:05.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java多线程一篇就够了
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="JAVA-线程实现-创建方式"><a href="#JAVA-线程实现-创建方式" class="headerlink" title="JAVA  线程实现/创建方式"></a>JAVA  线程实现/创建方式</h4><h5 id="继承Thread类"><a href="#继承Thread类" class="headerlink" title="继承Thread类"></a>继承Thread类</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class MyThread extends Thread &#123;</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;MyThread.run()&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">MyThread myThread1 = new MyThread();</span><br><span class="line">myThread1.start();</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现Runnable接口"><a href="#实现Runnable接口" class="headerlink" title="实现Runnable接口"></a>实现Runnable接口</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class MyThread extends OtherClass implements Runnable &#123;</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;MyThread.run()&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//启动 MyThread，需要首先实例化一个 Thread，并传入自己的 MyThread 实例：</span><br><span class="line">MyThread myThread = new MyThread();</span><br><span class="line">Thread thread = new Thread(myThread);</span><br><span class="line">thread.start();</span><br><span class="line">//事实上，当传入一个 Runnable target 参数给 Thread 后，Thread 的 run()方法就会调用</span><br><span class="line">target.run()</span><br><span class="line">public void run() &#123;</span><br><span class="line">    if (target != null) &#123;</span><br><span class="line">        target.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="有返回值的线程"><a href="#有返回值的线程" class="headerlink" title="有返回值的线程"></a>有返回值的线程</h5><p>有返回值的任务必须实现 Callable 接口，类似的，无返回值的任务必须 Runnable 接口。执行<br>Callable 任务后，可以获取一个 Future 的对象，在该对象上调用 get 就可以获取到 Callable 任务<br>返回的 Object 了，再结合线程池接口 ExecutorService 就可以实现传说中有返回结果的多线程<br>了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//创建一个线程池</span><br><span class="line">ExecutorService pool = Executors.newFixedThreadPool(taskSize);</span><br><span class="line">// 创建多个有返回值的任务</span><br><span class="line">List&lt;Future&gt; list = new ArrayList&lt;Future&gt;();</span><br><span class="line">for (int i = 0; i &lt; taskSize; i++) &#123;</span><br><span class="line">    Callable c = new MyCallable(i + &quot; &quot;);</span><br><span class="line">    // 执行任务并获取 Future 对象</span><br><span class="line">    Future f = pool.submit(c);</span><br><span class="line">    list.add(f);</span><br><span class="line">&#125;</span><br><span class="line">// 关闭线程池</span><br><span class="line">pool.shutdown();</span><br><span class="line">// 获取所有并发任务的运行结果</span><br><span class="line">for (Future f : list) &#123;</span><br><span class="line">    // 从 Future 对象上获取任务的返回值，并输出到控制台</span><br><span class="line">    System.out.println(&quot;res：&quot; + f.get().toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="四种线程池"><a href="#四种线程池" class="headerlink" title="四种线程池"></a>四种线程池</h4><ul>
+<li>newCachedThreadPool</li>
+</ul>
+<p>创建一个<strong>可根据需要创建新线程</strong>的线程池，但是在以前构造的线程可用时将重用它们。对于执行很多短期异步任务的程序而言，这些线程池通常可提高程序性能。<strong>调用execute将重用以前构造的线程（如果线程可用）。如果现有线程没有可用的，则创建一个新线程并添加到池中。终止并从缓存中移除那些已有60秒钟未被使用的线程</strong>。因此，长时间保持空闲的线程池不会使用任何资<br>源。</p>
+<ul>
+<li>newFixedThreadPool</li>
+</ul>
+<p>创建一个<strong>可重用固定线程数的线程池</strong>，以共享的无界队列方式来运行这些线程。在任意点，在大多数nThreads线程会处于处理任务的活动状态。<strong>如果在所有线程处于活动状态时提交附加任务，则在有可用线程之前，附加任务将在队列中等待</strong>。如果在关闭前的执行期间由于失败而导致任何线程终止，那么一个新线程将代替它执行后续的任务（如果需要）。在某个线程被显式地关闭之<br>前，池中的线程将一直存在。</p>
+<ul>
+<li>newScheduledThreadPool</li>
+</ul>
+<p>创建一个线程池，它可安排<strong>在给定延迟后运行命令或者定期地执行</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ScheduledExecutorService scheduledThreadPool= Executors.newScheduledThreadPool(3);</span><br><span class="line">scheduledThreadPool.schedule(newRunnable()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;延迟三秒&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 3, TimeUnit.SECONDS);</span><br><span class="line">scheduledThreadPool.scheduleAtFixedRate(newRunnable()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;延迟 1 秒后每三秒执行一次&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,1,3,TimeUnit.SECONDS);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>newSingleThreadExecutor</li>
+</ul>
+<p>Executors.newSingleThreadExecutor()返回一个线程池（这个线程池只有一个线程）,这个线程<br>池可以在线程死后（或发生异常时）重新启动一个线程来替代原来的线程继续执行下去！</p>
+<h4 id="线程生命周期-状态"><a href="#线程生命周期-状态" class="headerlink" title="线程生命周期(状态)"></a>线程生命周期(状态)</h4><h5 id="新建状态（NEW-）"><a href="#新建状态（NEW-）" class="headerlink" title="新建状态（NEW ）"></a>新建状态（NEW ）</h5><p>当程序使用 new 关键字创建了一个线程之后，该线程就处于新建状态，此时仅由 JVM 为其分配内存，并初始化其成员变量的值</p>
+<h5 id="就绪状态（RUNNABLE-）："><a href="#就绪状态（RUNNABLE-）：" class="headerlink" title="就绪状态（RUNNABLE ）："></a>就绪状态（RUNNABLE ）：</h5><p>当线程对象调用了 start()方法之后，该线程处于就绪状态。Java 虚拟机会为其创建方法调用栈和程序计数器，等待调度运行。</p>
+<h5 id="运行状-态（RUNNING-）："><a href="#运行状-态（RUNNING-）：" class="headerlink" title="运行状 态（RUNNING ）："></a>运行状 态（RUNNING ）：</h5><p>如果处于就绪状态的线程获得了CPU，开始执行run()方法的线程执行体，则该线程处于运行状态。</p>
+<h5 id="阻塞状态（BLOCKED-）："><a href="#阻塞状态（BLOCKED-）：" class="headerlink" title="阻塞状态（BLOCKED ）："></a>阻塞状态（BLOCKED ）：</h5><p>阻塞状态是指线程因为某种原因放弃了 cpu 使用权，也即让出了 cpu timeslice，暂时停止运行。直到线程进入可运行(runnable)状态，才有机会再次获得 cpu timeslice 转到运行(running)状态。</p>
+<h6 id="阻塞的情况分三种："><a href="#阻塞的情况分三种：" class="headerlink" title="阻塞的情况分三种："></a>阻塞的情况分三种：</h6><ul>
+<li>等待阻塞 （ o.wait-&gt; 等待对列 ） ：<br>运行(running)的线程执行o.wait()方法，JVM会把该线程放入等待队列(waitting queue)<br>中。</li>
+<li>同步阻塞 (lock-&gt; 锁池 )<br>运行(running)的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则 JVM 会把该线程放入锁池(lock pool)中。</li>
+<li>其他阻塞 (sleep/join)<br>运行(running)的线程执行 Thread.sleep(long ms)或t.join()方法，或者发出了 I/O 请求时，JVM 会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者 I/O处理完毕时，线程重新转入可运行(runnable)状态。<h5 id="线程死亡（DEAD-）"><a href="#线程死亡（DEAD-）" class="headerlink" title="线程死亡（DEAD ）"></a>线程死亡（DEAD ）</h5>线程会以下面三种方式结束，结束后就是死亡状态。</li>
+<li>正常结束：<br>run()或 call()方法执行完成，线程正常结束。</li>
+<li>异常结束：<br>线程抛出一个未捕获的 Exception 或 Error。</li>
+<li>调用 stop：<br>直接调用该线程的stop()方法来结束该线程—该方法通常容易导致死锁，不推荐使用。</li>
+</ul>
+<p><img src="https://github.com/Zhangzuhai/gitrepository/raw/master/thread.jpg" alt="image"></p>
+<h4 id="终止线程4种方式"><a href="#终止线程4种方式" class="headerlink" title="终止线程4种方式"></a>终止线程4种方式</h4><ol>
+<li><h5 id="正常运行结束"><a href="#正常运行结束" class="headerlink" title="正常运行结束"></a>正常运行结束</h5></li>
+<li><h5 id="使用退出标志退出线程"><a href="#使用退出标志退出线程" class="headerlink" title="使用退出标志退出线程"></a>使用退出标志退出线程</h5></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadSafe</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> exit = <span class="keyword">false</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!exit)&#123;</span><br><span class="line">            <span class="comment">//do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><h5 id="Interrupt方法结束线程"><a href="#Interrupt方法结束线程" class="headerlink" title="Interrupt方法结束线程"></a>Interrupt方法结束线程</h5></li>
+</ol>
+<ul>
+<li><strong>线程处于阻塞状态</strong>：如使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时，会使线程处于阻塞状态。当调用线程的 interrupt()方法时，会抛出InterruptException异常。阻塞中的那个方法抛出这个异常，通过代码捕获该异常，然后break跳出循环状态，从而让我们有机会结束这个线程的执行。通常很多人认为只要调用interrupt 方法线程就会结束，实际上是错的，一定要先捕获InterruptedException 异常之后通过break来跳出循环，才能正常结束run方法。</li>
+<li><strong>线程未处于阻塞状态</strong>：使用isInterrupted()判断线程的中断标志来退出循环。当使用interrupt()方法时，中断标志就会置 true</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadSafe</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!isInterrupted())&#123; <span class="comment">//非阻塞过程中通过判断中断标志来退出</span></span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                Thread.sleep(<span class="number">5</span>*<span class="number">1000</span>);<span class="comment">//阻塞过程捕获中断异常来退出</span></span><br><span class="line">            &#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                <span class="keyword">break</span>;<span class="comment">//捕获到异常之后，执行 break 跳出循环</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><h5 id="stop方法终止线程（线程不安全）"><a href="#stop方法终止线程（线程不安全）" class="headerlink" title="stop方法终止线程（线程不安全）"></a>stop方法终止线程（线程不安全）</h5>直接使用 thread.stop()来强行终止线程</li>
+</ol>
+<p>thread.stop()调用之后，创建子线程的线程就会抛出ThreadDeatherror的错误，并且会<strong>释放子线程所持有的所有锁</strong>。</p>
+<p>调用thread.stop()后导致了该线程所持有的所有锁的突然释放(不可控制)，那么被保护数据就有可能呈现不一致性，其他线程在使用这些被破坏的数据时，有可能导致一些很奇怪的应用程序错误</p>
+<h4 id="sleep-与-wait-区别"><a href="#sleep-与-wait-区别" class="headerlink" title="sleep 与 wait  区别"></a>sleep 与 wait  区别</h4><ol>
+<li>sleep()方法，属于<strong>Thread</strong>类。而wait()方法，属于<strong>Object</strong>类中的。</li>
+<li>sleep()方法导致了程序暂停执行指定的时间，让出 cpu 该其他线程，但是他的监控状态依然保持着，当指定的时间到了又会<strong>自动恢复运行状态</strong>。</li>
+<li>在调用 sleep()方法的过程中，线程<strong>不会释放对象锁</strong>。</li>
+<li>而当调用 wait()方法的时候，线程会<strong>放弃对象锁</strong>，进入等待此对象的等待锁定池，只有针对此对象<strong>调用notify()方法后本线程才进入对象锁定池准备获取对象锁进入运行状态</strong>。</li>
+</ol>
+<h4 id="start与run"><a href="#start与run" class="headerlink" title="start与run"></a>start与run</h4><ol>
+<li>start（）方法来启动线程，真正实现了多线程运行。这时无需等待run方法体代码执行完毕，可以直接继续执行下面的代码。</li>
+<li>通过调用Thread类的start()方法来启动一个线程，这时此线程是处于<strong>就绪状态</strong>，并没有运行。</li>
+<li>方法 run()称为线程体，它包含了要执行的这个线程的内容，开始运行run函数当中的代码，线程就进入了<strong>运行状态</strong>。Run方法运行结束，此线程终止。然后 CPU 再调度其它线程。</li>
+</ol>
+<h4 id="JAVA-后台线程"><a href="#JAVA-后台线程" class="headerlink" title="JAVA  后台线程"></a>JAVA  后台线程</h4><ol>
+<li>定义：守护线程–也称“服务线程”，他是后台线程，它有一个特性，即为用户线程提供公共服务，<strong>在没有用户线程可服务时会自动离开</strong>。</li>
+<li>优先级：守护线程的<strong>优先级比较低</strong>，用于为系统中的其它对象和线程提供服务。</li>
+<li>设置：<strong>通过 setDaemon(true) 来设置线程为“守护线程”</strong>；将一个用户线程设置为守护线程的方式是在线程对象创建之前用线程对象的 setDaemon方法。</li>
+<li><strong>在 Daemon 线程中产生的新线程也是 Daemon 的</strong>。</li>
+<li>线程则是<strong>JVM 级别的</strong>，以 Tomcat 为例，如果你在 Web 应用中启动一个线程，这个线程的生命周期并不会和Web应用程序保持同步。也就是说，即使你停止了 Web 应用，这个线程依旧是活跃的。</li>
+<li>example: 垃圾回收线程就是一个经典的守护线程，当我们的程序中不再有任何运行的Thread,程序就不会再产生垃圾，垃圾回收器也就无事可做，所以当垃圾回收线程是JVM上仅剩的线程时，垃圾回收线程会自动离开。它始终在低级别的状态中运行，用于实时监控和管理系统中的可回收资源。</li>
+<li>生命周期：守护进程（Daemon）是运行在后台的一种特殊进程。它独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。也就是说<strong>守护线程不依赖于终端，但是依赖于系统，与系统“同生共死”</strong>。当 JVM 中所有的线程都是守护线程的时候，JVM 就可以退出了；如果还有一个或以上的非守护线程则 JVM 不会退出。</li>
+</ol>
+<h4 id="线程基本方法"><a href="#线程基本方法" class="headerlink" title="线程基本方法"></a>线程基本方法</h4><p>wait，notify，notifyAll，sleep，join，yield等<br><img src="https://github.com/Zhangzuhai/gitrepository/raw/master/threadmethod.png" alt="image"></p>
+<h5 id="线程等待（wait-）"><a href="#线程等待（wait-）" class="headerlink" title="线程等待（wait ）"></a>线程等待（wait ）</h5><p>调用该方法的线程进入 WAITING 状态，只有<strong>等待另外线程的通知或被中断才会返回</strong>，需要注意的<br>是调用 wait()方法后，会<strong>释放对象的锁</strong>。因此，wait 方法一般用在同步方法或同步代码块中。</p>
+<h5 id="线程睡眠（sleep-）"><a href="#线程睡眠（sleep-）" class="headerlink" title="线程睡眠（sleep ）"></a>线程睡眠（sleep ）</h5><p>sleep 导致当前线程休眠，与 wait 方法不同的是 sleep <strong>不会释放当前占有的锁</strong>,sleep(long)会导致<br>线程进入 <strong>TIMED-WATING</strong> 状态，而 wait()方法会导致当前线程进入 WATING 状态</p>
+<h5 id="线程让步（yield-）"><a href="#线程让步（yield-）" class="headerlink" title="线程让步（yield ）"></a>线程让步（yield ）</h5><p>yield 会<strong>使当前线程让出 CPU 执行时间片</strong>，与其他线程一起重新竞争 CPU 时间片。一般情况下，<br>优先级高的线程有更大的可能性成功竞争得到 CPU 时间片，但这又不是绝对的，有的操作系统对<br>线程优先级并不敏感。</p>
+<h5 id="线程中断（interrupt-）"><a href="#线程中断（interrupt-）" class="headerlink" title="线程中断（interrupt ）"></a>线程中断（interrupt ）</h5><p>中断一个线程，其本意是给这个线程一个通知信号，会影响这个线程内部的一个中断标识位。这<br>个线程本身并不会因此而改变状态(如阻塞，终止等)。</p>
+<ol>
+<li>调用 interrupt()方法并不会中断一个正在运行的线程。也就是说处于 Running 状态的<strong>线程并不会因为被中断而被终止，仅仅改变了内部维护的中断标识位而已。</strong></li>
+<li>若调用 sleep()而使线程处于 TIMED-WATING 状态，这时调用 interrupt()方法，会抛出<br>InterruptedException,从而使线程提前结束 TIMED-WATING 状态。</li>
+<li>许多声明抛出 InterruptedException 的方法(如 Thread.sleep(long mills 方法))，<strong>抛出异<br>常前，都会清除中断标识位</strong>，所以抛出异常后，调用 isInterrupted()方法将会返回 false。</li>
+<li>中断状态是线程固有的一个标识位，可以通过此标识位安全的终止线程。比如,你想终止<br>一个线程thread的时候，可以调用<strong>thread.interrupt()方法</strong>，在线程的run方法内部可以<br>根据 <strong>thread.isInterrupted()的值</strong>来优雅的终止线程。</li>
+</ol>
+<h5 id="线程等待其他线程终止（Join）"><a href="#线程等待其他线程终止（Join）" class="headerlink" title="线程等待其他线程终止（Join）"></a>线程等待其他线程终止（Join）</h5><p>join() 方法，等待其他线程终止，在当前线程中调用一个线程的 join() 方法，则当前线程<strong>转为阻塞状态</strong>，直到另一个线程结束，当前线程再<strong>由阻塞状态变为就绪状态</strong>，等待 cpu 的宠幸。</p>
+<p><strong>主线程生成并启动了子线程，需要用到子线程返回的结果，也就是需要主线程需要在子线程结束后再结束，这时候就要用到 join() 方法。</strong></p>
+<h5 id="线程唤醒（notify-）"><a href="#线程唤醒（notify-）" class="headerlink" title="线程唤醒（notify ）"></a>线程唤醒（notify ）</h5><p>Object 类中的 notify() 方法，唤醒在此对象监视器上等待的单个线程，如果所有线程都在此对象上等待，则会选择唤醒其中一个线程，选择是任意的，并在对实现做出决定时发生，线程通过调用其中一个 wait() 方法，在对象的监视器上等待，直到当前的线程放弃此对象上的锁定，才能继续执行被唤醒的线程，被唤醒的线程将以常规方式与在该对象上主动同步的其他所有线程进行竞争。类似的方法还有 notifyAll() ，唤醒再次监视器上等待的所有线程。</p>
+<h5 id="其他线程相关方法"><a href="#其他线程相关方法" class="headerlink" title="其他线程相关方法"></a>其他线程相关方法</h5><ol>
+<li>sleep()：强迫一个线程睡眠Ｎ毫秒。</li>
+<li>isAlive()： 判断一个线程是否存活。</li>
+<li>join()： 等待线程终止。</li>
+<li>activeCount()： 程序中活跃的线程数。</li>
+<li>enumerate()： 枚举程序中的线程。</li>
+<li>currentThread()： 得到当前线程。</li>
+<li>isDaemon()： 一个线程是否为守护线程。</li>
+<li>setDaemon()：设置一个线程为守护线程。(用户线程和守护线程的区别在于，是否等待主线程依赖于主线程结束而结束)</li>
+<li>setName()： 为线程设置一个名称。</li>
+<li>wait()： 强迫一个线程等待。</li>
+<li>notify()： 通知一个线程继续运行。</li>
+<li>setPriority()： 设置一个线程的优先级。</li>
+<li>getPriority():：获得一个线程的优先级。</li>
+</ol>
+<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><h4 id="线程池的组成"><a href="#线程池的组成" class="headerlink" title="线程池的组成"></a>线程池的组成</h4><ol>
+<li>线程池管理器：用于创建并管理线程池</li>
+<li>工作线程：线程池中的线程</li>
+<li>任务接口：每个任务必须实现的接口，用于工作线程调度其运行</li>
+<li>任务队列：用于存放待处理的任务，提供一种缓冲机制</li>
+</ol>
+<h4 id="TheadPoolExecutor构造方法"><a href="#TheadPoolExecutor构造方法" class="headerlink" title="TheadPoolExecutor构造方法"></a>TheadPoolExecutor构造方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,<span class="keyword">int</span> maximumPoolSize, <span class="keyword">long</span> keepAliveTime, TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,Executors.defaultThreadFactory(), defaultHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>corePoolSize：指定了线程池中的线程数量。</li>
+<li>maximumPoolSize：指定了线程池中的最大线程数量。</li>
+<li>keepAliveTime：当前线程池数量超过 corePoolSize 时，多余的空闲线程的存活时间，即多<br>次时间内会被销毁。</li>
+<li>unit：keepAliveTime 的单位。</li>
+<li>workQueue：任务队列，被提交但尚未被执行的任务。</li>
+<li>threadFactory：线程工厂，用于创建线程，一般用默认的即可。</li>
+<li>handler：拒绝策略，当任务太多来不及处理，如何拒绝任务。</li>
+</ol>
+<h4 id="拒绝策略"><a href="#拒绝策略" class="headerlink" title="拒绝策略"></a>拒绝策略</h4><p>线程池中的线程已经用完了，无法继续为新任务服务，同时，等待队列也已经排满了，再也<br>塞不下新任务了。这时候我们就需要拒绝策略机制合理的处理这个问题。<br>JDK 内置的拒绝策略如下：</p>
+<ol>
+<li>AbortPolicy ： <strong>直接抛出异常</strong>，阻止系统正常运行。</li>
+<li>CallerRunsPolicy ： 只要线程池未关闭，该策略直接在调用者线程中，运行当前被丢弃的任务。显然这样做不会真的丢弃任务，但是，任务提交线程的性能极有可能会急剧下降。</li>
+<li>DiscardOldestPolicy ： <strong>丢弃</strong>最老的一个请求，也就是<strong>即将被执行的一个任务</strong>，并尝试再<br>次提交当前任务。</li>
+<li>DiscardPolicy ： 该策略默默地<strong>丢弃无法处理的任务</strong>，不予任何处理。如果允许任务丢失，这是最好的一种方案。</li>
+</ol>
+<p>以上内置拒绝策略均实现了 RejectedExecutionHandler 接口，若以上策略仍无法满足实际需要，完全可以自己扩展 RejectedExecutionHandler 接口。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/Java多线程一篇就够了/" data-id="cjwhg3hr6000gicuvctzyci14" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/04/RabbitMQ安装和配置/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          RabbitMQ安装和配置
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">3DES/CBC/PKCS/7Padding加密解密</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/spring-cloud/" style="font-size: 10px;">spring cloud</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/06/04/Spring Cloud Eureka 服务上下线监控/">Spring Cloud Eureka 服务上下线监控</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/JVM内存分配与回收/">JVM内存分配与回收</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/RabbitMQ安装和配置/">RabbitMQ安装和配置</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/Java多线程一篇就够了/">Java多线程一篇就够了</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/">3DES/CBC/PKCS/7Padding加密解密</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zzuhai<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

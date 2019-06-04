@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>JVM内存分配与回收 | zzuhai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JVM内存分配与回收堆的结构 新生代：eden，ServivorFrom，ServivorTo 老年代：tentired  新生代GC（Minor GC）（复制-&amp;gt;清空-&amp;gt;互换） eden 、 servicorFrom  复制到 ServicorTo，年龄+1 清空 eden 、 servicorFrom ServicorTo 和 ServicorFrom 互换  指发生新生代的的垃圾">
+<meta name="keywords" content="JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存分配与回收">
+<meta property="og:url" content="http://zzuhai.github.io/2019/06/04/JVM内存分配与回收/index.html">
+<meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="JVM内存分配与回收堆的结构 新生代：eden，ServivorFrom，ServivorTo 老年代：tentired  新生代GC（Minor GC）（复制-&amp;gt;清空-&amp;gt;互换） eden 、 servicorFrom  复制到 ServicorTo，年龄+1 清空 eden 、 servicorFrom ServicorTo 和 ServicorFrom 互换  指发生新生代的的垃圾">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdn.net/20161228113643841?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20161228115819392?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2019-06-04T06:51:00.425Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM内存分配与回收">
+<meta name="twitter:description" content="JVM内存分配与回收堆的结构 新生代：eden，ServivorFrom，ServivorTo 老年代：tentired  新生代GC（Minor GC）（复制-&amp;gt;清空-&amp;gt;互换） eden 、 servicorFrom  复制到 ServicorTo，年龄+1 清空 eden 、 servicorFrom ServicorTo 和 ServicorFrom 互换  指发生新生代的的垃圾">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20161228113643841?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+  
+    <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">zzuhai</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://zzuhai.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JVM内存分配与回收" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/JVM内存分配与回收/" class="article-date">
+  <time datetime="2019-06-04T06:49:05.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JVM内存分配与回收
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h5 id="JVM内存分配与回收"><a href="#JVM内存分配与回收" class="headerlink" title="JVM内存分配与回收"></a>JVM内存分配与回收</h5><h6 id="堆的结构"><a href="#堆的结构" class="headerlink" title="堆的结构"></a>堆的结构</h6><ul>
+<li>新生代：eden，ServivorFrom，ServivorTo</li>
+<li>老年代：tentired</li>
+</ul>
+<h6 id="新生代GC（Minor-GC）（复制-gt-清空-gt-互换）"><a href="#新生代GC（Minor-GC）（复制-gt-清空-gt-互换）" class="headerlink" title="新生代GC（Minor GC）（复制-&gt;清空-&gt;互换）"></a>新生代GC（Minor GC）（复制-&gt;清空-&gt;互换）</h6><ul>
+<li>eden 、 servicorFrom  复制到 ServicorTo，年龄+1</li>
+<li>清空 eden 、 servicorFrom</li>
+<li>ServicorTo 和 ServicorFrom 互换</li>
+</ul>
+<p>指发生新生代的的垃圾收集动作，Minor GC非常频繁，回收速度一般也比较快。</p>
+<h6 id="老年代GC（Major-GC-Full-GC）"><a href="#老年代GC（Major-GC-Full-GC）" class="headerlink" title="老年代GC（Major GC/Full GC）"></a>老年代GC（Major GC/Full GC）</h6><p>指发生在老年代的GC，出现了Major GC经常会伴随至少一次的Minor GC（并非绝对，在进行 MajorGC 前一般都先进行<br>了一次 MinorGC，使得有新生代的对象晋身入老年代，导致空间不够用时才触发），Major GC的速度一般会比Minor GC的慢10倍以上。</p>
+<h6 id="永久代（java8移除）"><a href="#永久代（java8移除）" class="headerlink" title="永久代（java8移除）"></a>永久代（java8移除）</h6><p>指内存的永久保存区域，主要存放 Class 和 Meta（元数据）的信息,Class 在被加载的时候被<br>放入永久区域，它和和存放实例的区域不同,GC 不会在主程序运行期对永久区域进行清理，也导致了永久代的区域会随着加载的 Class 的增多而胀满，最终抛出 OOM 异常。</p>
+<h6 id="元数据"><a href="#元数据" class="headerlink" title="元数据"></a>元数据</h6><p>在Java8中，永久代已经被移除，被一个称为“元数据区”（元空间）的区域所取代。元空间<br>的本质和永久代类似，元空间与永久代之间最大的区别在于：元空间并不在虚拟机中，而是使用<br>本地内存。因此，默认情况下，元空间的大小仅受本地内存限制。类的元数据放入 native<br>memory, 字符串池和类的静态变量放入 java 堆中，这样可以加载多少类的元数据就不再由<br>MaxPermSize 控制, 而由系统的实际可用空间来控制。</p>
+<p>大部分情况，对象都会首先在 Eden 区域分配，在一次新生代垃圾回收后，如果对象还存活，则会进入 servicorFrom 或者 ServicorTo，并且对象的年龄还会加 1(Eden区-&gt;Survivor 区后对象的初始年龄变为1)，当它的年龄增加到一定程度（默认为15岁），就会被晋升到老年代中。</p>
+<h6 id="大对象直接进入老年代（字符串，数组等）"><a href="#大对象直接进入老年代（字符串，数组等）" class="headerlink" title="大对象直接进入老年代（字符串，数组等）"></a>大对象直接进入老年代（字符串，数组等）</h6><h6 id="长期存活的对象进入老年代"><a href="#长期存活的对象进入老年代" class="headerlink" title="长期存活的对象进入老年代"></a>长期存活的对象进入老年代</h6><p>每熬过一次新生代GC年龄增加1岁，到一定年龄（默认15岁），进入老年代</p>
+<h6 id="动态对象年龄判定"><a href="#动态对象年龄判定" class="headerlink" title="动态对象年龄判定"></a>动态对象年龄判定</h6><p>如果 Survivor 空间中相同年龄所有对象大小的总和大于 Survivor 空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无需达到要求的年龄。（不一定必须要达到一定年龄）</p>
+<h5 id="判断对象死亡"><a href="#判断对象死亡" class="headerlink" title="判断对象死亡"></a>判断对象死亡</h5><h6 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h6><p>给对象中添加一个引用计数器，每当有一个地方引用它，计数器就加1；当引用失效，计数器就减1；任何时候计数器为0的对象就是不可能再被使用的。</p>
+<h6 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h6><p>通过一系列的称为 “GC Roots” 的对象作为起点，从这些节点开始向下搜索，节点所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连的话，则证明此对象是不可用的</p>
+<p>这两个算法都和引用相关</p>
+<ul>
+<li>强：不回收，即使抛内存溢出异常也不回收</li>
+<li>软：内存不足才回收</li>
+<li>弱：发现就回收，不管是否内存足够</li>
+<li>虚：任何时候都可能被回收，和没有任何引用一样</li>
+</ul>
+<h6 id="不可达对象不是立刻被回收"><a href="#不可达对象不是立刻被回收" class="headerlink" title="不可达对象不是立刻被回收"></a>不可达对象不是立刻被回收</h6><p>可达性分析法中不可达的对象被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行 finalize 方法。当对象没有覆盖 finalize 方法，或 finalize 方法已经被虚拟机调用过时，虚拟机将这两种情况视为没有必要执行。被判定为需要执行的对象将会被放在一个队列中进行第二次标记，除非这个对象与引用链上的任何一个对象建立关联，否则就会被真的回收。</p>
+<h6 id="判断一个常量是废弃常量（1-7以后，常量池在堆中）"><a href="#判断一个常量是废弃常量（1-7以后，常量池在堆中）" class="headerlink" title="判断一个常量是废弃常量（1.7以后，常量池在堆中）"></a>判断一个常量是废弃常量（1.7以后，常量池在堆中）</h6><p>在常量池中存在字符串 “abc”，如果当前没有任何String对象引用该字符串常量的话，就说明常量 “abc” 就是废弃常量,内存回收时，有必要就会被清出常量池</p>
+<h6 id="判断一个类是无用的类（无用类可以被回收）"><a href="#判断一个类是无用的类（无用类可以被回收）" class="headerlink" title="判断一个类是无用的类（无用类可以被回收）"></a>判断一个类是无用的类（无用类可以被回收）</h6><ul>
+<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
+<li>加载该类的 ClassLoader 已经被回收。</li>
+<li>该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ul>
+<h4 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h4><h5 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h5><p>首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象</p>
+<h6 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h6><ul>
+<li>效率问题</li>
+<li>空间问题（标记清除后会产生大量不连续的碎片）<h5 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h5>为了解决效率问题，“复制”收集算法出现了。它可以将内存分为大小相同的两块，每次使用其中的一块。当这一块的内存使用完后，就将还存活的对象复制到另一块去，然后再把使用的空间一次清理掉。这样就使每次的内存回收都是对内存区间的一半进行回收。<h5 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h5>根据老年代的特点特出的一种标记算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象回收，而是让所有存活的对象向一端移动，然后直接清理掉端边界以外的内存。<h5 id="分代收集算法（为什么要分为新生代和老年代？）"><a href="#分代收集算法（为什么要分为新生代和老年代？）" class="headerlink" title="分代收集算法（为什么要分为新生代和老年代？）"></a>分代收集算法（为什么要分为新生代和老年代？）</h5>这个也不能说是算法，只是根据各个年代的特点选择合适的垃圾收集算法。<br>比如在新生代中，每次收集都会有大量对象死去，所以可以选择复制算法，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代的对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择“标记-清除”或“标记-整理”算法进行垃圾收集。<h4 id="分区收集算法"><a href="#分区收集算法" class="headerlink" title="分区收集算法"></a>分区收集算法</h4>分区算法则将整个堆空间划分为连续的不同小区间, 每个小区间独立使用, 独立回收. 这样做的<br>好处是可以控制一次回收多少个小区间 , 根据目标停顿时间, 每次合理地回收若干个小区间(而不是<br>整个堆), 从而减少一次 GC 所产生的停顿</li>
+</ul>
+<h4 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h4><p><img src="https://img-blog.csdn.net/20161228113643841?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></p>
+<h5 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h5><p>单线程，只会使用一条垃圾收集线程去完成垃圾收集工作，进行垃圾收集工作的时候Stop The World。</p>
+<p>新生代采用复制算法，老年代采用标记-整理算法。</p>
+<p>简单而高效（与其他收集器的单线程相比），没有线程交互的开销</p>
+<p>对于运行在Client模式下的虚拟机来说是个不错的选择。</p>
+<h5 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h5><p>ParNew收集器其实就是Serial收集器的多线程版本。</p>
+<p>可以通过-XX:ParallelGCThreads 参数来限制垃圾收集器的线程数</p>
+<p>新生代采用复制算法，老年代采用标记-整理算法。</p>
+<p>Server模式下的虚拟机的首要选择</p>
+<h5 id="Parallel-Scavenge收集器"><a href="#Parallel-Scavenge收集器" class="headerlink" title="Parallel Scavenge收集器"></a>Parallel Scavenge收集器</h5><p>Parallel Scavenge收集器关注点是吞吐量（高效率的利用CPU）。CMS等垃圾收集器的关注点更多的是用户线程的停顿时间（提高用户体验）。所谓吞吐量就是CPU中用于运行用户代码的时间与CPU总消耗时间的比值</p>
+<p>新生代采用复制算法，老年代采用标记-整理算法。</p>
+<h5 id="Serial-Old收集器（CMS的备用收集器）"><a href="#Serial-Old收集器（CMS的备用收集器）" class="headerlink" title="Serial Old收集器（CMS的备用收集器）"></a>Serial Old收集器（CMS的备用收集器）</h5><p>Serial收集器的老年代版本</p>
+<h5 id="Parallel-Old收集器"><a href="#Parallel-Old收集器" class="headerlink" title="Parallel Old收集器"></a>Parallel Old收集器</h5><p>Parallel Scavenge收集器的老年代版本</p>
+<h5 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h5><p>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。它而非常符合在注重用户体验的应用上使用。</p>
+<p>CMS（Concurrent Mark Sweep）收集器是HotSpot虚拟机第一款真正意义上的并发收集器，它第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</p>
+<h6 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h6><ul>
+<li>初始标记： 暂停所有的其他线程，并记录下直接与root相连的对象，速度很快 ；</li>
+<li>并发标记： 同时开启GC和用户线程，用一个闭包结构去记录可达对象。但在这个阶段结束，这个闭包结构并不能保证包含当前所有的可达对象。因为用户线程可能会不断的更新引用域，所以GC线程无法保证可达性分析的实时性。所以这个算法里会跟踪记录这些发生引用更新的地方。</li>
+<li>重新标记： 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</li>
+<li>并发清除： 开启用户线程，同时GC线程开始对为标记的区域做清扫。<br><img src="https://img-blog.csdn.net/20161228115819392?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></li>
+</ul>
+<p>CMS垃圾收集器不能像其他垃圾收集器那样等待年老代机会完全被填满之后再进行收集，需要预留一部分空间供并发收集时的使用，可以通过参数-XX:CMSInitiatingOccupancyFraction来设置年老代空间达到多少的百分比时触发CMS进行垃圾收集，默认是68%。</p>
+<p>如果在CMS运行期间，预留的内存无法满足程序需要，就会出现一次ConcurrentMode Failure失败，此时虚拟机将启动预备方案，使用Serial Old收集器重新进行年老代垃圾回收。</p>
+<h6 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h6><p>并发收集、低停顿</p>
+<h6 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h6><ul>
+<li>对CPU资源敏感，其默认启动的收集线程数=(CPU数量+3)/4，在用户程序本来CPU负荷已经比较高的情况下，如果还要分出CPU资源用来运行垃圾收集器线程，会使得CPU负载加重。；</li>
+<li>无法处理浮动垃圾，在标记的过程中，不断有新的垃圾产生，但是没有标记到，只有下一次GC才能清除；</li>
+<li>它使用的回收算法-“标记-清除”算法会导致收集结束时会有大量空间碎片产生。如果无法找到一块足够大的连续内存存放对象时，将会触发因此Full GC，CMS提供一个开关参数-XX:+UseCMSCompactAtFullCollection，用于指定在Full GC之后进行内存整理，内存整理会使得垃圾收集停顿时间变长，CMS提供了另外一个参数-XX:CMSFullGCsBeforeCompaction，用于设置在执行多少次不压缩的Full GC之后，跟着再来一次内存整理。</li>
+</ul>
+<h5 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h5><ol>
+<li>基于标记-整理算法，不产生内存碎片。</li>
+<li>可以非常精确控制停顿时间，在不牺牲吞吐量前提下，实现低停顿垃圾回收</li>
+</ol>
+<p>G1 收集器避免全区域垃圾收集，<strong>它把堆内存划分为大小固定的几个独立区域</strong>，并且跟踪这些区域的垃圾收集进度，同时在后台维护一个优先级列表，每次根据所允许的收集时间，<strong>优先回收垃圾最多的区域</strong>。区域划分和优先级区域回收机制，确保 G1 收集器可以在有限时间获得最高的垃圾收<br>集效率</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/JVM内存分配与回收/" data-id="cjwhg3hqs000dicuvr376cmf0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/04/Spring Cloud Eureka 服务上下线监控/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring Cloud Eureka 服务上下线监控
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/04/RabbitMQ安装和配置/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">RabbitMQ安装和配置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/spring-cloud/" style="font-size: 10px;">spring cloud</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/06/04/Spring Cloud Eureka 服务上下线监控/">Spring Cloud Eureka 服务上下线监控</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/JVM内存分配与回收/">JVM内存分配与回收</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/RabbitMQ安装和配置/">RabbitMQ安装和配置</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/Java多线程一篇就够了/">Java多线程一篇就够了</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/">3DES/CBC/PKCS/7Padding加密解密</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zzuhai<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
