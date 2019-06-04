@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>熔断器Hystrix配置及使用 | zzuhai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1、背景调用链路：A》B》C，如果C不可用，将影响B，进而影响A，形成雪崩效应。 2、熔断机制Hystrix Command请求后端服务失败数量超过一定比例(默认50%)且10秒内超过20个请求, 断路器会切换到开路状态(Open). 这时所有请求会直接失败而不会发送到后端服务. 断路器保持在开路状态一段时间后(默认5秒，每隔5s允许一个请求通过), 自动切换到半开路状态(HALF-OPEN).">
+<meta name="keywords" content="spring cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="熔断器Hystrix配置及使用">
+<meta property="og:url" content="http://zzuhai.github.io/2019/06/04/熔断器Hystrix配置及使用/index.html">
+<meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="1、背景调用链路：A》B》C，如果C不可用，将影响B，进而影响A，形成雪崩效应。 2、熔断机制Hystrix Command请求后端服务失败数量超过一定比例(默认50%)且10秒内超过20个请求, 断路器会切换到开路状态(Open). 这时所有请求会直接失败而不会发送到后端服务. 断路器保持在开路状态一段时间后(默认5秒，每隔5s允许一个请求通过), 自动切换到半开路状态(HALF-OPEN).">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-04T09:09:30.270Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="熔断器Hystrix配置及使用">
+<meta name="twitter:description" content="1、背景调用链路：A》B》C，如果C不可用，将影响B，进而影响A，形成雪崩效应。 2、熔断机制Hystrix Command请求后端服务失败数量超过一定比例(默认50%)且10秒内超过20个请求, 断路器会切换到开路状态(Open). 这时所有请求会直接失败而不会发送到后端服务. 断路器保持在开路状态一段时间后(默认5秒，每隔5s允许一个请求通过), 自动切换到半开路状态(HALF-OPEN).">
+  
+    <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">zzuhai</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://zzuhai.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-熔断器Hystrix配置及使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/熔断器Hystrix配置及使用/" class="article-date">
+  <time datetime="2019-06-04T09:08:51.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      熔断器Hystrix配置及使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1、背景"><a href="#1、背景" class="headerlink" title="1、背景"></a>1、背景</h4><p>调用链路：A》B》C，如果C不可用，将影响B，进而影响A，形成雪崩效应。</p>
+<h4 id="2、熔断机制"><a href="#2、熔断机制" class="headerlink" title="2、熔断机制"></a>2、熔断机制</h4><p>Hystrix Command请求后端服务失败数量超过一定比例(默认50%)且10秒内超过20个请求, 断路器会切换到开路状态(Open). 这时所有请求会直接失败而不会发送到后端服务. 断路器保持在开路状态一段时间后(默认5秒，每隔5s允许一个请求通过), 自动切换到半开路状态(HALF-OPEN). 这时会判断下一次请求的返回情况, 如果请求成功（请求都是健康的（RT&lt;250ms））, 断路器切回闭路状态(CLOSED), 否则重新切换到开路状态(OPEN). Hystrix的断路器就像我们家庭电路中的保险丝, 一旦后端服务不可用, 断路器会直接切断请求链, 避免发送大量无效请求影响系统吞吐量, 并且断路器有自我检测并恢复的能力.<br>熔断针对方法级别，A服务调用B服务的B1接口熔断，此时A服务依旧能调用B服务的B2接口。虽不直接影响调用B2接口，但由于熔断被触发，必然请求频率及错误比例会较高，这将导致单实例性能受到影响，从而间接影响A服务调用B服务的B2接口，表现通常为超时。</p>
+<p>Note：测试发现，服务抛出的异常也会引发熔断。<br>HystrixBadRequestException异常将不会触发熔断。</p>
+<h6 id="Hystrix如何解决依赖隔离"><a href="#Hystrix如何解决依赖隔离" class="headerlink" title="Hystrix如何解决依赖隔离"></a>Hystrix如何解决依赖隔离</h6><ol>
+<li>Hystrix使用命令模式HystrixCommand(Command)包装依赖调用逻辑，每个命令在单独线程中/信号授权下执行。</li>
+<li>可配置依赖调用超时时间,超时时间一般设为比99.5%平均时间略高即可.当调用超时时，直接返回或执行fallback逻辑。</li>
+<li>为每个依赖提供一个小的线程池（或信号），如果线程池已满调用将被立即拒绝，默认不采用排队，加速失败判定时间。</li>
+<li>依赖调用结果分:成功，失败（抛出异常），超时，线程拒绝，短路。 请求失败(异常，拒绝，超时，短路)时执行fallback(降级)逻辑。</li>
+<li>提供熔断器组件,可以自动运行或手动调用,停止当前依赖一段时间(10秒)，熔断器默认错误率阈值为50%,超过将自动运行。</li>
+<li>提供近实时依赖的统计和监控。</li>
+</ol>
+<h4 id="3、添加熔断机制"><a href="#3、添加熔断机制" class="headerlink" title="3、添加熔断机制"></a>3、添加熔断机制</h4><p>Note：<br>以demo中提到的SpringCloudConsumer项目为例，该服务将通过SpringCloudProducerFeignClient接口调用SpringCloudProducer服务。</p>
+<h5 id="3-1、application-properties配置"><a href="#3-1、application-properties配置" class="headerlink" title="3.1、application.properties配置"></a>3.1、application.properties配置</h5><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#开启熔断机制</span></span><br><span class="line"><span class="string">feign.hystrix.enabled=true</span></span><br><span class="line"><span class="comment"># 设置hystrix超时时间，默认1000ms</span></span><br><span class="line"><span class="string">hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=60000</span></span><br><span class="line"><span class="comment"># 是否开启超时，默认false，不建议开启</span></span><br><span class="line"><span class="comment"># hystrix.command.default.execution.isolation.thread.interruptOnTimeout=false</span></span><br><span class="line"><span class="comment"># 最大线程数量，默认10，Fast Fail 应用，建议使用默认值。</span></span><br><span class="line"><span class="comment"># hystrix.threadpool.default.coreSize=20</span></span><br><span class="line"><span class="comment"># 允许在队列中的等待的任务数量，默认5，Fast Fail 应用，建议使用默认值。</span></span><br><span class="line"><span class="comment"># hystrix.threadpool.default.queueSizeRejectionThreshold=10</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># queueSizeRejectionThreshold默认值是5，允许在队列中的等待的任务数量。maxQueueSize默认值是-1，队列大小。如果是Fast Fail 应用，建议使用默认值。线程池饱满后直接拒绝后续的任务，不再进行等待。即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝。</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-2、创建熔断回调类"><a href="#3-2、创建熔断回调类" class="headerlink" title="3.2、创建熔断回调类"></a>3.2、创建熔断回调类</h5><p>在feignClient同级目录创建目录fallback，在hystrix目录新建回调类。回调类分为含异常信息的回调类（以FallbackFactory为后缀），以及不含异常信息的回调类（以Fallback为后缀），二选一即可。</p>
+<h6 id="3-2-1、创建含异常信息的回调类"><a href="#3-2-1、创建含异常信息的回调类" class="headerlink" title="3.2.1、创建含异常信息的回调类"></a>3.2.1、创建含异常信息的回调类</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringCloudProducerFallbackFactory</span> <span class="keyword">implements</span> <span class="title">FallbackFactory</span>&lt;<span class="title">SpringCloudProducerFeignClient</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 可获取熔断异常，重写接口中的各个方法分别返回带异常信息的熔断信息.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cause 异常信息(可用于记录日志)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> FeignClient</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SpringCloudProducerFeignClient <span class="title">create</span><span class="params">(Throwable cause)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SpringCloudProducerFeignClient() &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">testTrackID</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"testTrackID:"</span> + cause.getMessage();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> RoomRelationBo <span class="title">getRoomRelationByKeyID</span><span class="params">(String KeyID)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-2-2、创建不含异常信息的回调类"><a href="#3-2-2、创建不含异常信息的回调类" class="headerlink" title="3.2.2、创建不含异常信息的回调类"></a>3.2.2、创建不含异常信息的回调类</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringCloudProducer2Fallback</span> <span class="keyword">implements</span> <span class="title">SpringCloudProducerFeignClient</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">testTrackID</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="string">"[Hystrix]testTrackID"</span>; <span class="comment">// 自定义熔断返回信息</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RoomRelationBo <span class="title">getRoomRelationByKeyID</span><span class="params">(String KeyID)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3、为FeignClient指定fallback或fallbackFactory"><a href="#3-3、为FeignClient指定fallback或fallbackFactory" class="headerlink" title="3.3、为FeignClient指定fallback或fallbackFactory"></a>3.3、为FeignClient指定fallback或fallbackFactory</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@FeignClient(name = "spring-cloud-producer",fallback= SpringCloudProducerFallback.class)</span></span><br><span class="line"><span class="meta">@FeignClient</span>(name = <span class="string">"spring-cloud-producer"</span>,fallbackFactory= SpringCloudProducerFallbackFactory.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SpringCloudProducerFeignClient</span> </span>&#123;</span><br><span class="line">    <span class="meta">@PostMapping</span>(value = <span class="string">"/api/testTrackID"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">testTrackID</span><span class="params">(@RequestParam(value = <span class="string">"param"</span>)</span> String param)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(value = <span class="string">"/api/getRoomRelationByKeyID"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> RoomRelationBo <span class="title">getRoomRelationByKeyID</span><span class="params">(@RequestParam(<span class="string">"keyID"</span>)</span> String KeyID)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4、依赖配置"><a href="#3-4、依赖配置" class="headerlink" title="3.4、依赖配置"></a>3.4、依赖配置</h5><p>引入依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注解：<br>应用主类Application上加上@EnableCircuitBreaker或@EnableHystrix注解开启Hystrix的使用。</p>
+<hr>
+<h4 id="4、Hystrix配置说明"><a href="#4、Hystrix配置说明" class="headerlink" title="4、Hystrix配置说明"></a>4、Hystrix配置说明</h4><ol>
+<li>统计滚动的时间窗口 default 10000 ten seconds<br>withMetricsRollingStatisticalWindowInMilliseconds(10000)</li>
+<li>滚动时间窗口 bucket 数量 default<br>withMetricsRollingStatisticalWindowBuckets(10)</li>
+<li>采样时间间隔 default 500<br>withMetricsHealthSnapshotIntervalInMilliseconds(1)</li>
+<li>熔断器在整个统计时间内是否开启的阀值，默认20。也就是10秒钟内至少请求20次，熔断器才发挥起作用<br>withCircuitBreakerRequestVolumeThreshold(20)</li>
+<li>默认:50。当出错率超过50%后熔断器启动.<br>withCircuitBreakerErrorThresholdPercentage(30)</li>
+<li>熔断器默认工作时间,默认:5秒.熔断器中断请求5秒后会关闭重试,如果请求仍然失败,继续打开熔断器5秒,如此循环<br>withCircuitBreakerSleepWindowInMilliseconds(1000)</li>
+<li>隔离策略<br>withExecutionIsolationStrategy(ExecutionIsolationStrategy.SEMAPHORE)</li>
+<li>信号量隔离时最大并发请求数<br>withExecutionIsolationSemaphoreMaxConcurrentRequests(2)</li>
+<li>命令组名，该命令属于哪一个组，可以帮助我们更好的组织命令。<br>withGroupKey(HystrixCommandGroupKey.Factory.asKey(“HelloGroup”))</li>
+<li>命令名称，每个CommandKey代表一个依赖抽象,相同的依赖要使用相同的CommandKey名称。依赖隔离的根本就是对相同CommandKey的依赖做隔离。<br>andCommandKey(HystrixCommandKey.Factory.asKey(“Hello”)</li>
+<li>所属线程池的名称，同样配置的命令会共享同一线程池，若不配置，会默认使用GroupKey作为线程池名称。<br>andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(“HelloThreadPool”))  </li>
+<li>命令属性，设置包括断路器的配置，隔离策略，降级设置，以及一些监控指标等。</li>
+<li>线程池属性，配置包括线程池大小，排队队列的大小等。</li>
+</ol>
+<p>hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=1000<br>超时时间，默认1000ms<br>execution.timeout.enabled<br>是否开启超时，默认true<br>execution.isolation.thread.interruptOnTimeout<br>当超时的时候是否中断(interrupt) HystrixCommand.run()执行</p>
+<p>配置说明官方文档：<a href="https://github.com/Netflix/Hystrix/wiki/Configuration" target="_blank" rel="noopener">https://github.com/Netflix/Hystrix/wiki/Configuration</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/熔断器Hystrix配置及使用/" data-id="cjwhlc95x001fawuvuhjfinxp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/06/04/堆/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">堆</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/groovy/">groovy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nexus/">nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/堆/">堆</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/红黑树/">红黑树</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/RSA加密使用详解/">RSA加密使用详解</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zzuhai<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -7,15 +7,24 @@
   
   <title>ActiveMQ的安装 | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="MQ">
+  <meta name="description" content="安装ActiveMQ安装ActiveMQ之前需要先安装好JDK并配置环境变量可以通过Win+R，cmd，输入java -version来查看是否配置好了JDK的安装和环境配置 一、通过docker在linux安装ActiveMQ 查找镜像 1docker search activemq  拉取latest镜像 1docker pull webcenter/activemq  创建容器同时后台启动a">
+<meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ActiveMQ的安装">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/ActiveMQ的安装/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="安装ActiveMQ安装ActiveMQ之前需要先安装好JDK并配置环境变量可以通过Win+R，cmd，输入java -version来查看是否配置好了JDK的安装和环境配置 一、通过docker在linux安装ActiveMQ 查找镜像 1docker search activemq  拉取latest镜像 1docker pull webcenter/activemq  创建容器同时后台启动a">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:32:24.412Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190509143138158.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190509143850324.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190509144013319.jpg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019050915204047.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190509144547934.jpg">
+<meta property="og:updated_time" content="2019-06-04T09:13:11.190Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ActiveMQ的安装">
+<meta name="twitter:description" content="安装ActiveMQ安装ActiveMQ之前需要先安装好JDK并配置环境变量可以通过Win+R，cmd，输入java -version来查看是否配置好了JDK的安装和环境配置 一、通过docker在linux安装ActiveMQ 查找镜像 1docker search activemq  拉取latest镜像 1docker pull webcenter/activemq  创建容器同时后台启动a">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190509143138158.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +93,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="安装ActiveMQ"><a href="#安装ActiveMQ" class="headerlink" title="安装ActiveMQ"></a>安装ActiveMQ</h1><p>安装ActiveMQ之前需要先安装好JDK并配置环境变量<br>可以通过Win+R，cmd，输入java -version来查看是否配置好了<br><a href="https://jingyan.baidu.com/article/6dad5075d1dc40a123e36ea3.html" target="_blank" rel="noopener">JDK的安装和环境配置</a></p>
+<h2 id="一、通过docker在linux安装ActiveMQ"><a href="#一、通过docker在linux安装ActiveMQ" class="headerlink" title="一、通过docker在linux安装ActiveMQ"></a>一、通过docker在linux安装ActiveMQ</h2><ol>
+<li><p>查找镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search activemq</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取latest镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull webcenter/activemq</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建容器同时后台启动activemq</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name myactivemq -p 61616:61616 -p 8161:8161 webcenter/activemq</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>安装完毕</p>
+<h2 id="二、通过压缩包在windows上安装ActiveMQ"><a href="#二、通过压缩包在windows上安装ActiveMQ" class="headerlink" title="二、通过压缩包在windows上安装ActiveMQ"></a>二、通过压缩包在windows上安装ActiveMQ</h2><p>一、下载ActiveMQ <a href="http://activemq.apache.org/components/classic/download/" target="_blank" rel="noopener">下载地址</a><br><img src="https://img-blog.csdnimg.cn/20190509143138158.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="下载ActiveMQ"><br>二、解压，进入bin，进入win64（如果电脑是32位的，进入win32），双击activemq.bat</p>
+<p>三、RabbitMQ和ActiveMQ默认的amqp端口号是一样的，所以如果之前启动了RabbitMQ需要先关闭，不然启动ActiveMQ的时候会报错<br><img src="https://img-blog.csdnimg.cn/20190509143850324.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>四、可以修改端口的配置，在conf下面的activemq.xml里面修改<br><img src="https://img-blog.csdnimg.cn/20190509144013319.jpg" alt="端口修改"><br>五、ActiveMQ启动以后默认的访问地址是<a href="http://localhost:8161/admin/，登录以后主界面" target="_blank" rel="noopener">http://localhost:8161/admin/，登录以后主界面</a><br><img src="https://img-blog.csdnimg.cn/2019050915204047.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="ActiveMQ主界面"></p>
+<p>六、修改端口号，在conf下面的jetty.xml文件<img src="https://img-blog.csdnimg.cn/20190509144547934.jpg" alt="修改端口号"><br>使用用请参考：<br><a href="https://blog.csdn.net/sinat_35757488/article/details/90273616" target="_blank" rel="noopener">ActiveMQ的代码使用</a><br><a href="https://blog.csdn.net/sinat_35757488/article/details/90273758" target="_blank" rel="noopener">ActiveMQ通过JmsTemplate来发送接收消息</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ的安装/" data-id="cjwhka21f0001uwuv0axphi2x" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ的安装/" data-id="cjwhlc9530008awuvxcrhb1qn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -140,7 +166,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +188,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +205,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

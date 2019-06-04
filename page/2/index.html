@@ -62,6 +62,90 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-spring-boot使用mybatis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/spring-boot使用mybatis/" class="article-date">
+  <time datetime="2019-06-04T08:25:04.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/spring-boot使用mybatis/">spring boot使用mybatis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>创建数据库User</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">User</span>;</span><br></pre></td></tr></table></figure>
+
+<p>创建表userinfo</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> userinfo(</span><br><span class="line"><span class="keyword">id</span> <span class="built_in">int</span> primary <span class="keyword">key</span> auto_increment,</span><br><span class="line"><span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">18</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">Default</span> <span class="string">''</span>,</span><br><span class="line">sex <span class="built_in">varchar</span>(<span class="number">2</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">Default</span> <span class="string">''</span>,</span><br><span class="line">age <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">Default</span> <span class="number">0</span>,</span><br><span class="line">address <span class="built_in">varchar</span>(<span class="number">200</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">Default</span> <span class="string">''</span>,</span><br><span class="line">email <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">Default</span> <span class="string">''</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>插入一条数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="keyword">User</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> userinfo (<span class="keyword">id</span>,<span class="keyword">Name</span>,sex,age,address,email) <span class="keyword">values</span>(<span class="number">123</span>,<span class="string">'小明'</span>,<span class="string">'1'</span>,<span class="number">20</span>,<span class="string">'北京'</span>,<span class="string">'123@qq.com'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>创建一个spring boot项目<br>pom加入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.persistence<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>persistence-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>application.properties中配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">spring.datasource.url=jdbc:mysql://ip地址:3306/库名</span><br><span class="line">spring.datasource.username=root</span><br><span class="line">spring.datasource.password=root</span><br><span class="line">spring.datasource.driver-class-name=com.mysql.jdbc.Driver</span><br><span class="line"></span><br><span class="line">#mapper.xml的路径</span><br><span class="line">mybatis.mapper-locations=classpath:mybatis/mapper/*.xml</span><br><span class="line">mybatis.config-location=classpath:mybatis/mybatis-config.xml</span><br></pre></td></tr></table></figure>
+
+<p>写个测试类测试一下是否能连接数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Value(&quot;$&#123;spring.datasource.driver-class-name&#125;&quot;)</span><br><span class="line">String driver;</span><br><span class="line">@Value(&quot;$&#123;spring.datasource.username&#125;&quot;)</span><br><span class="line">String username;</span><br><span class="line">@Value(&quot;$&#123;spring.datasource.password&#125;&quot;)</span><br><span class="line">String password;</span><br><span class="line">@Value(&quot;$&#123;spring.datasource.url&#125;&quot;)</span><br><span class="line">String url;</span><br><span class="line">	</span><br><span class="line">@Test</span><br><span class="line">public void contextLoads() throws Exception &#123;</span><br><span class="line">	Class.forName(driver);</span><br><span class="line">	System.out.println(DriverManager.getConnection(url,username,password));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制台正常打印，说明能够成功连接上</p>
+<p><img src="https://img-blog.csdnimg.cn/20190527101649604.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>项目结构<br><img src="https://img-blog.csdnimg.cn/20190527092211434.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>主类上加上注解@MapperScan(“com.zzuhai.mybatispractice.mapper”)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@MapperScan</span>(<span class="string">"com.zzuhai.mybatispractice.mapper"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MybatispracticeApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ConfigurableApplicationContext context = SpringApplication.run(MybatispracticeApplication.class, args);</span><br><span class="line">		System.out.println(context.getBean(DataSource.class));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新建entity对应数据库字段</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Table;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"userinfo"</span>)</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Id</span></span><br><span class="line">	<span class="keyword">int</span> id;</span><br><span class="line">	String name;</span><br><span class="line">	String sex;</span><br><span class="line">	<span class="keyword">int</span> age;</span><br><span class="line">	String address;</span><br><span class="line">	String email;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新建mapper接口，加上@Mapper注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Mapper;</span><br><span class="line"><span class="keyword">import</span> com.zzuhai.mybatispractice.enity.UserInfo;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserMapper</span> </span>&#123;</span><br><span class="line">	<span class="function">UserInfo <span class="title">selectById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新建mapper.xml，id和mapper接口中一致，namespace对应mapper接口的路径地址，设置好入参和反参类型，编写sql语句</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE mapper</span></span><br><span class="line"><span class="meta">PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"</span></span><br><span class="line"><span class="meta">"http://mybatis.org/dtd/mybatis-3-mapper.dtd"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">"com.zzuhai.mybatispractice.mapper.UserMapper"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"selectById"</span> <span class="attr">parameterType</span>=<span class="string">"Integer"</span> <span class="attr">resultType</span>=<span class="string">"com.zzuhai.mybatispractice.enity.UserInfo"</span>&gt;</span></span><br><span class="line">        select * from userinfo where id=#&#123;id&#125; limit 1;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置mybatis-config.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE configuration</span></span><br><span class="line"><span class="meta">PUBLIC "-//mybatis.org//DTD Config 3.0//EN"</span></span><br><span class="line"><span class="meta">"http://mybatis.org/dtd/mybatis-3-config.dtd"&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">alias</span>=<span class="string">"Integer"</span> <span class="attr">type</span>=<span class="string">"java.lang.Integer"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">alias</span>=<span class="string">"Long"</span> <span class="attr">type</span>=<span class="string">"java.lang.Long"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">alias</span>=<span class="string">"HashMap"</span> <span class="attr">type</span>=<span class="string">"java.util.HashMap"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">alias</span>=<span class="string">"LinkedHashMap"</span> <span class="attr">type</span>=<span class="string">"java.util.LinkedHashMap"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">alias</span>=<span class="string">"ArrayList"</span> <span class="attr">type</span>=<span class="string">"java.util.ArrayList"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">alias</span>=<span class="string">"LinkedList"</span> <span class="attr">type</span>=<span class="string">"java.util.LinkedList"</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>新建servcie接口和实现类来调用mapper接口里的方法，进行数据库操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.zzuhai.mybatispractice.enity.UserInfo;</span><br><span class="line"><span class="keyword">import</span> com.zzuhai.mybatispractice.mapper.UserMapper;</span><br><span class="line"><span class="keyword">import</span> com.zzuhai.mybatispractice.service.IService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceImpl</span> <span class="keyword">implements</span> <span class="title">IService</span></span>&#123;</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	UserMapper userMapper;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> UserInfo <span class="title">selectUser</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> userMapper.selectById(id);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后通过测试类来测试一下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	UserInfo userInfo = serviceImpl.selectUser(<span class="number">123</span>);</span><br><span class="line">	System.out.println(userInfo.getName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制台打印出插入那条数据的name字段值说明成功<br>整合完成</p>
+<p>报错</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.apache.ibatis.binding.BindingException: Invalid bound statement (not found)</span><br></pre></td></tr></table></figure>
+
+<p>说明application.properties中的mybatis.mapper-locations路径配置不正确</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/spring-boot使用mybatis/" data-id="cjwhlc95q0012awuvaeixj5ap" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-oracle常用函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/04/oracle常用函数/" class="article-date">
@@ -84,11 +168,108 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>常用函数</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ASCII(X)</td>
+<td>返回字符X的ASCII码</td>
+</tr>
+<tr>
+<td>CONCAT(X,Y)</td>
+<td>连接字符串X和Y</td>
+</tr>
+<tr>
+<td>INSTR(X,STR[,START][,N)</td>
+<td>从X中查找str，可以指定从start开始，也可以指定从n开始</td>
+</tr>
+<tr>
+<td>LENGTH(X)</td>
+<td>返回X的长度</td>
+</tr>
+<tr>
+<td>LOWER(X)</td>
+<td>X转换成小写</td>
+</tr>
+<tr>
+<td>UPPER(X)</td>
+<td>X转换成大写</td>
+</tr>
+<tr>
+<td>LTRIM(X[,TRIM_STR])</td>
+<td>把X的左边截去trim_str字符串，缺省截去空格</td>
+</tr>
+<tr>
+<td>RTRIM(X[,TRIM_STR])</td>
+<td>把X的右边截去trim_str字符串，缺省截去空格</td>
+</tr>
+<tr>
+<td>TRIM([TRIM_STR  FROM]X)</td>
+<td>把X的两边截去trim_str字符串，缺省截去空格</td>
+</tr>
+<tr>
+<td>REPLACE(X,old,new)</td>
+<td>在X中查找old，并替换成new</td>
+</tr>
+<tr>
+<td>SUBSTR(X,start[,length])</td>
+<td>返回X的字串，从start处开始，截取length个字符，缺省length，默认到结尾</td>
+</tr>
+<tr>
+<td><strong>NVL(X,VALUE)</strong></td>
+<td><strong>如果X为空，返回value，否则返回X</strong></td>
+</tr>
+<tr>
+<td>NVL2(x,value1,value2)</td>
+<td>如果x非空，返回value1，否则返回value2</td>
+</tr>
+<tr>
+<td>lpad(string,n,[pad_string])</td>
+<td>string：字符或者参数；n：字符的长度，是返回的字符串的数量，如果这个数量比原字符串的长度要短，lpad函数将会把字符串截取成从左到右的n个字符；pad_string：可选参数，这个字符串是要粘贴到string的左边，若这个参数未写，lpad函数将会在string的左边粘贴空格。</td>
+</tr>
+<tr>
+<td>Rpad(string,n,[pad_string])</td>
+<td>和lpad相反</td>
+</tr>
+<tr>
+<td>to_char</td>
+<td>参考<a href="https://blog.csdn.net/xiaohuihui821/article/details/78652958" target="_blank" rel="noopener">https://blog.csdn.net/xiaohuihui821/article/details/78652958</a></td>
+</tr>
+<tr>
+<td>mod(m,n)</td>
+<td>m除以n的余数，如果n是0，返回m</td>
+</tr>
+<tr>
+<td>decode (expression, search_1, result_1, search_2, result_2, …., search_n, result_n)</td>
+<td>如果expression等于search_1，则返回result_1，以此类推</td>
+</tr>
+<tr>
+<td>trunc</td>
+<td>参考<a href="https://www.cnblogs.com/zfyouxi/p/5236336.html" target="_blank" rel="noopener">https://www.cnblogs.com/zfyouxi/p/5236336.html</a></td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lpad('tech', 7); 将返回' tech'</span><br><span class="line">lpad('tech', 2); 将返回'te'</span><br><span class="line">lpad('tech', 8, '0'); 将返回'0000tech'</span><br><span class="line">lpad('tech on the net', 15, 'z'); 将返回'tech on the net'</span><br><span class="line">lpad('tech on the net', 16, 'z'); 将返回'ztech on the net'</span><br></pre></td></tr></table></figure>
+
+<p>不等于：&lt;&gt;，!=，^=</p>
+<p>单行注释（中间没有空格）：- -</p>
+<p>多行注释：/**/</p>
+<h5 id="case函数"><a href="#case函数" class="headerlink" title="case函数"></a>case函数</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--简单Case函数  </span></span><br><span class="line">CASE sex  </span><br><span class="line">WHEN '1' THEN '男'  </span><br><span class="line">WHEN '2' THEN '女'  </span><br><span class="line">ELSE '其他' <span class="keyword">END</span>  </span><br><span class="line"><span class="comment">--Case搜索函数  </span></span><br><span class="line"><span class="keyword">CASE</span> <span class="keyword">WHEN</span> sex = <span class="string">'1'</span> <span class="keyword">THEN</span> <span class="string">'男'</span>  </span><br><span class="line"><span class="keyword">WHEN</span> sex = <span class="string">'2'</span> <span class="keyword">THEN</span> <span class="string">'女'</span>  </span><br><span class="line"><span class="keyword">ELSE</span> <span class="string">'其他'</span> <span class="keyword">END</span></span><br></pre></td></tr></table></figure>
+
+<p>Case函数只返回第一个符合条件的值，剩下的Case部分将会被自动忽略。</p>
+<h5 id="oracle查询空值"><a href="#oracle查询空值" class="headerlink" title="oracle查询空值"></a>oracle查询空值</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> mgr <span class="keyword">is</span> <span class="literal">null</span> 或<span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> mgr &lt;=<span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="oracle查询日期"><a href="#oracle查询日期" class="headerlink" title="oracle查询日期"></a>oracle查询日期</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">where to_char(t.pleg_date,'yyyy-mm-dd')='2019-05-28'</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/oracle常用函数/" data-id="cjwhka2290010uwuvooql8cy7" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/oracle常用函数/" data-id="cjwhlc95p0010awuvgwao5ymb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
@@ -122,11 +303,34 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>要使用groovy脚本</p>
+<p>第一步：添加pom文件的依赖</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;org.codehaus.groovy&lt;<span class="regexp">/groupId&gt;</span></span><br><span class="line"><span class="regexp">   &lt;artifactId&gt;groovy-all&lt;/</span>artifactId&gt;</span><br><span class="line">   &lt;version&gt;<span class="number">2.4</span><span class="number">.9</span>&lt;<span class="regexp">/version&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>接下来就可以写脚本，执行脚本，调脚本，为所欲为</p>
+<h1 id="1-写脚本"><a href="#1-写脚本" class="headerlink" title="1.写脚本"></a>1.写脚本</h1><p>脚本的内容参照这个脚本的格式来写<br>在最开始编写脚本的时候参数都用明文来写，方便直接测试脚本</p>
+<h1 id="2-测试执行脚本"><a href="#2-测试执行脚本" class="headerlink" title="2.测试执行脚本"></a>2.测试执行脚本</h1><p>首先新增一个groovy<br><img src="https://img-blog.csdnimg.cn/20181204215501846.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="新增groovy"><br>选择脚本存在的路径，确定<br><img src="https://img-blog.csdnimg.cn/20181204215624604.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="设置脚本路径"></p>
+<p>然后就可以在脚本中打上断点，使用debug来调试脚本</p>
+<h1 id="3-java调用脚本"><a href="#3-java调用脚本" class="headerlink" title="3.java调用脚本"></a>3.java调用脚本</h1><p>调用脚本之前，把之前写死的数据都改成这种样式，‘$’符号后面的值是调用脚本传入的map的key的值，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String temp = <span class="string">"$temp"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>相关包</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.script.Bindings;</span><br><span class="line"><span class="keyword">import</span> javax.script.ScriptEngine;</span><br><span class="line"><span class="keyword">import</span> javax.script.ScriptEngineManager;</span><br><span class="line"><span class="keyword">import</span> javax.script.ScriptException;</span><br></pre></td></tr></table></figure>
+
+<p>调用脚本的代码：</p>
+<h6 id="第一种"><a href="#第一种" class="headerlink" title="第一种"></a>第一种</h6><p>直接传入script代码执行，从上往下依次执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ScriptEngineManager factory = <span class="keyword">new</span> ScriptEngineManager();</span><br><span class="line">ScriptEngine engine = factory.getEngineByName(<span class="string">"groovy"</span>);</span><br><span class="line">Bindings bindings = engine.createBindings();</span><br><span class="line">bindings.putAll(params);</span><br><span class="line">Object resultMap = engine.eval(script, bindings);</span><br></pre></td></tr></table></figure>
+
+<p>params：表示的是传入脚本的map数据<br>script：表示的是脚本的代码</p>
+<h6 id="第二种"><a href="#第二种" class="headerlink" title="第二种"></a>第二种</h6><p>传入script文件所在位置url，并且设置方法名，从方法名开始执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GroovyClassLoader classLoader = <span class="keyword">new</span> GroovyClassLoader(Thread.currentThread().getContextClassLoader());</span><br><span class="line">File sourceFile = <span class="keyword">new</span> File(fileUrl);</span><br><span class="line">Class groovyClass = classLoader.parseClass(<span class="keyword">new</span> GroovyCodeSource(sourceFile));</span><br><span class="line">GroovyObject instance = (GroovyObject)groovyClass.newInstance();</span><br><span class="line">Map&lt;String, Object&gt; result = (Map&lt;String, Object&gt;)instance.invokeMethod(<span class="string">"invokeTest"</span>, param);</span><br></pre></td></tr></table></figure>
+
+<p>fileUrl：表示脚本文件的地址<br>invokeTest：表示从这个方法开始执行</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/groovy使用/" data-id="cjwhka227000wuwuvkqqy051a" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/groovy使用/" data-id="cjwhlc95k000tawuv68hjlwys" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/groovy/">groovy</a></li></ul>
@@ -160,11 +364,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h4 id="通过代码使用"><a href="#通过代码使用" class="headerlink" title="通过代码使用"></a>通过代码使用</h4><h5 id="1-点对点模式"><a href="#1-点对点模式" class="headerlink" title="1.  点对点模式"></a>1.  点对点模式</h5><h6 id="生产者代码"><a href="#生产者代码" class="headerlink" title="生产者代码"></a>生产者代码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.jms.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.activemq.ActiveMQConnection;</span><br><span class="line"><span class="keyword">import</span> org.apache.activemq.ActiveMQConnectionFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 生产者</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Producer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//默认连接用户名</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String USERNAME = ActiveMQConnection.DEFAULT_USER;</span><br><span class="line">    <span class="comment">//默认连接密码</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;</span><br><span class="line">    <span class="comment">//默认连接地址</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String BROKER_URL = ActiveMQConnection.DEFAULT_BROKER_URL;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 默认连接用户名</span></span><br><span class="line">        String USERNAME = ActiveMQConnection.DEFAULT_USER;</span><br><span class="line">        <span class="comment">// 默认连接密码</span></span><br><span class="line">        String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;</span><br><span class="line">        <span class="comment">// 默认连接地址</span></span><br><span class="line">        String BROKER_URL = ActiveMQConnection.DEFAULT_BROKER_URL;</span><br><span class="line">        <span class="comment">// 不是默认的地址的时候，需要这样写</span></span><br><span class="line">        <span class="comment">// String BROKER_URL = "failover://tcp://120.79.150.160:61616";</span></span><br><span class="line">        <span class="comment">// 1.创建一个连接工厂对象</span></span><br><span class="line">        ConnectionFactory connectionFactory = <span class="keyword">new</span> ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKER_URL);</span><br><span class="line">        <span class="comment">// 第二种方式</span></span><br><span class="line">        <span class="comment">// ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 2.使用工厂对象来创建一个Connection对象</span></span><br><span class="line">            Connection connection = connectionFactory.createConnection();</span><br><span class="line">            <span class="comment">// 3.开启连接，调用Connection对象的start方法</span></span><br><span class="line">            connection.start();</span><br><span class="line">            <span class="comment">// 4.创建一个Session对象</span></span><br><span class="line">            <span class="comment">// 第一个参数:是否开启事务,如果开启事务true带二个参数无意义，一般不开启事务false</span></span><br><span class="line">            <span class="comment">// 第二个参数:应答模式。一般自动应答或者手动应答。一般自动应答</span></span><br><span class="line">            Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br><span class="line">            <span class="comment">// 5.使用Session对象创建一个Destination对象。两种形式queue,topic,现在应该使用queue</span></span><br><span class="line">            Destination destination = session.createQueue(<span class="string">"MyFirstQueueTest"</span>);</span><br><span class="line">            <span class="comment">// 6.使用Session对象创建一个Producer对象</span></span><br><span class="line">            MessageProducer producer = session.createProducer(destination);</span><br><span class="line">            <span class="comment">// 设置不持久化，此处学习，实际根据项目决定，可以不设置</span></span><br><span class="line">            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);</span><br><span class="line">            <span class="comment">// 7.创建一个Message对象，可以使用Message</span></span><br><span class="line">            TextMessage message = session.createTextMessage(<span class="string">"woshi ceshi xiaoxi"</span>);</span><br><span class="line">            <span class="comment">// Message message = session.createTextMessage("woshi ceshi xiaoxi");</span></span><br><span class="line">            <span class="comment">// 8.发送消息</span></span><br><span class="line">            producer.send(message);</span><br><span class="line">            <span class="comment">// 提交事务，当应答模式为事务的时候才需要提交</span></span><br><span class="line">            session.commit();</span><br><span class="line">            <span class="comment">// 9.关闭资源</span></span><br><span class="line">            session.close();</span><br><span class="line">            connection.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="消费者代码"><a href="#消费者代码" class="headerlink" title="消费者代码"></a>消费者代码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">consumer</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">//1.创建连接工厂</span></span><br><span class="line">    ActiveMQConnectionFactory factory = <span class="keyword">new</span> ActiveMQConnectionFactory(<span class="string">"tcp://localhost:61616"</span>);</span><br><span class="line">    <span class="comment">//2.创建连接</span></span><br><span class="line">    Connection connection = factory.createConnection();</span><br><span class="line">    <span class="comment">//3.开启连接</span></span><br><span class="line">    connection.start();</span><br><span class="line">    <span class="comment">//4.创建session对象</span></span><br><span class="line">    Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br><span class="line">    <span class="comment">//5.创建目的地，需要跟生产者发送消息的目的地一致不然不能接收到消息</span></span><br><span class="line">    Queue queue = session.createQueue(<span class="string">"MyFirstQueueTest"</span>);</span><br><span class="line">    <span class="comment">//使用Session对象创建一个消费者对象</span></span><br><span class="line">    MessageConsumer consumer = session.createConsumer(queue);</span><br><span class="line">    <span class="comment">//接收消息</span></span><br><span class="line">    consumer.setMessageListener(<span class="keyword">new</span> MessageListener() &#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            TextMessage textMessage = (TextMessage)message;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                String text = textMessage.getText();</span><br><span class="line">                System.out.println(text);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//等待接收消息,消费完了就没了</span></span><br><span class="line">    System.in.read();<span class="comment">//等待我们敲击键盘才会向下执行</span></span><br><span class="line">    <span class="comment">//关闭资源</span></span><br><span class="line">    consumer.close();</span><br><span class="line">    session.close();</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>PS：创建session的过程都是一样的，只是后面的操作不一样</strong></p>
+<h5 id="2-广播模式（和PTP模式的区别就是session创建的是Topic不是Destination）"><a href="#2-广播模式（和PTP模式的区别就是session创建的是Topic不是Destination）" class="headerlink" title="2. 广播模式（和PTP模式的区别就是session创建的是Topic不是Destination）"></a>2. 广播模式（和PTP模式的区别就是session创建的是Topic不是Destination）</h5><h6 id="生产者代码-1"><a href="#生产者代码-1" class="headerlink" title="生产者代码"></a>生产者代码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">topicProducer</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">//1.创建连接工厂</span></span><br><span class="line">    ActiveMQConnectionFactory factory = <span class="keyword">new</span> ActiveMQConnectionFactory(<span class="string">"tcp://localhost:61616"</span>);</span><br><span class="line">    <span class="comment">//2.创建连接</span></span><br><span class="line">    Connection connection = factory.createConnection();</span><br><span class="line">    <span class="comment">//3.开启连接</span></span><br><span class="line">    connection.start();</span><br><span class="line">    <span class="comment">//4.创建session对象</span></span><br><span class="line">    Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br><span class="line">    <span class="comment">//5.创建目的地Destination，该模式创建的是Topic</span></span><br><span class="line">    Topic topic = session.createTopic(<span class="string">"MyFirstQueueTest"</span>);</span><br><span class="line">    <span class="comment">//6.创建生产者</span></span><br><span class="line">    MessageProducer producer = session.createProducer(topic);</span><br><span class="line">    <span class="comment">//7.创建消息</span></span><br><span class="line">    TextMessage message = session.createTextMessage(<span class="string">"hello topic"</span>);</span><br><span class="line">    <span class="comment">//8.发送消息</span></span><br><span class="line">    producer.send(message);</span><br><span class="line">    <span class="comment">//9.关闭资源</span></span><br><span class="line">    producer.close();</span><br><span class="line">    session.close();</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="消费者代码-1"><a href="#消费者代码-1" class="headerlink" title="消费者代码"></a>消费者代码</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">topicConsumer</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">//1.创建连接工厂</span></span><br><span class="line">    ActiveMQConnectionFactory factory = <span class="keyword">new</span> ActiveMQConnectionFactory(<span class="string">"tcp://localhost:61616"</span>);</span><br><span class="line">    <span class="comment">//2.创建连接</span></span><br><span class="line">    Connection connection = factory.createConnection();</span><br><span class="line">    <span class="comment">//3.开启连接</span></span><br><span class="line">    connection.start();</span><br><span class="line">    <span class="comment">//4.创建session对象</span></span><br><span class="line">    Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br><span class="line">    <span class="comment">//5.创建目的地Destination，该模式创建的是Topic</span></span><br><span class="line">    Topic topic = session.createTopic(<span class="string">"MyFirstQueueTest"</span>);</span><br><span class="line">    <span class="comment">//6.创建消费者</span></span><br><span class="line">    MessageConsumer consumer = session.createConsumer(topic);</span><br><span class="line">    <span class="comment">//7.接收消息</span></span><br><span class="line">    consumer.setMessageListener(<span class="keyword">new</span> MessageListener() &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">            TextMessage textMessage = (TextMessage)message;</span><br><span class="line">            <span class="comment">//获取信息并打印</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                String text = textMessage.getText();</span><br><span class="line">                System.out.println(text);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    System.out.println(<span class="string">"----消费者1准备就绪----"</span>);</span><br><span class="line">    System.in.read();</span><br><span class="line">    <span class="comment">//9.关闭资源</span></span><br><span class="line">    consumer.close();</span><br><span class="line">    session.close();</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-设置消息应答的模式"><a href="#3-设置消息应答的模式" class="headerlink" title="3.设置消息应答的模式"></a>3.设置消息应答的模式</h6><p>设置应答模式（就是ack消息的方式，自动消费，还是手动通过代码调用来消费等）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一个参数:是否开启事务,如果开启事务true带二个参数无意义（Session.SESSION_TRANSACTED模式），一般不开启事务false</span></span><br><span class="line"><span class="comment">//第二个参数:应答模式。一般自动应答或者手动应答。一般自动应答</span></span><br><span class="line">Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br></pre></td></tr></table></figure>
+
+<p>几种应答模式<br>|||<br>–|–<br>Session.AUTO_ACKNOWLEDGE|自动应答<br>Session.CLIENT_ACKNOWLEDGE|手动应答<br>Session.DUPS_OK_ACKNOWLEDGE|延迟提交<br>Session.SESSION_TRANSACTED|事务</p>
+<h2 id="手动消费消息"><a href="#手动消费消息" class="headerlink" title="手动消费消息"></a>手动消费消息</h2><p>如果模式为CLIENT_ACKNOWLEDGE模式，即手动应答消费<br>在监听器中重写的onMessage的入参message需要在方法体中手动ack</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">message.acknowledge();</span><br></pre></td></tr></table></figure>
+
+<p>参考文章：<br><a href="https://www.jianshu.com/p/9769a1749778" target="_blank" rel="noopener">https://www.jianshu.com/p/9769a1749778</a><br><a href="https://blog.csdn.net/hyhanyu/article/details/79816279" target="_blank" rel="noopener">https://blog.csdn.net/hyhanyu/article/details/79816279</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ的代码使用/" data-id="cjwhka21l0004uwuv1q8kw2kc" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ的代码使用/" data-id="cjwhlc9510004awuvk2p8gjyo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -198,11 +419,26 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>添加activemq依赖</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-activemq&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件配置消息队列的地址</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  activemq:</span><br><span class="line">#    broker地址 两个单机配置：failover:(tcp://localhost:61616,tcp://localhost:61617)?randomize=true</span><br><span class="line">    broker-url: tcp:<span class="comment">//127.0.0.1:61616</span></span><br><span class="line">    pool:</span><br><span class="line">      max-connections: <span class="number">100</span></span><br><span class="line">  jms:</span><br><span class="line">#    采用队列模式为false，主题模式为true</span><br><span class="line">    pub-sub-domain: <span class="keyword">false</span></span><br><span class="line">    cache:</span><br><span class="line">      session-cache-size: <span class="number">100</span></span><br><span class="line">    template:</span><br><span class="line">      receive-timeout: <span class="number">100</span></span><br><span class="line">#      是否持久化</span><br><span class="line">      delivery-mode: persistent</span><br></pre></td></tr></table></figure>
+
+<p>生产者代码(入参是队列名和消息)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.core.JmsTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.core.MessageCreator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jms.JMSException;</span><br><span class="line"><span class="keyword">import</span> javax.jms.Message;</span><br><span class="line"><span class="keyword">import</span> javax.jms.Session;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProducerService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> JmsTemplate jmsTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(String destination, <span class="keyword">final</span> String msg)</span></span>&#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName()+<span class="string">" 向队列"</span>+destination.toString()+<span class="string">"发送消息----------------------&gt;"</span>+msg);</span><br><span class="line">        jmsTemplate.send(destination, <span class="keyword">new</span> MessageCreator() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Message <span class="title">createMessage</span><span class="params">(Session session)</span> <span class="keyword">throws</span> JMSException </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> session.createTextMessage(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消费者监听队列接收消息（注解是队列名）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.jms.annotation.EnableJms;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.annotation.JmsListener;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jms.*;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@EnableJms</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerListener</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@JmsListener</span>(destination = <span class="string">"demoQueueDestination1"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">        String msg = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            msg = ((TextMessage)message).getText();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"listen:"</span>+msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消费者手动接收消息（入参是队列名）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.core.JmsTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jms.JMSException;</span><br><span class="line"><span class="keyword">import</span> javax.jms.TextMessage;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> JmsTemplate jmsTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">receive</span><span class="params">(String destination)</span> <span class="keyword">throws</span> JMSException,NullPointerException </span>&#123;</span><br><span class="line">        TextMessage textMessage = (TextMessage) jmsTemplate.receive(destination);</span><br><span class="line">        String text = textMessage.getText();</span><br><span class="line">        System.out.println(<span class="string">"从队列"</span> + destination.toString() + <span class="string">"收到了消息：\t"</span> + text);</span><br><span class="line">        <span class="keyword">return</span> text;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ通过JmsTemplate来发送接收消息/" data-id="cjwhka21p0008uwuvev8rjtn1" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ通过JmsTemplate来发送接收消息/" data-id="cjwhlc9520006awuvpma364nq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -236,11 +472,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h3 id="通过JMX-REST-API来进行监控"><a href="#通过JMX-REST-API来进行监控" class="headerlink" title="通过JMX REST API来进行监控"></a>通过JMX REST API来进行监控</h3><p>get请求访问下面的地址<br>需要修改ip地址，端口（默认8161）<br>修改地址中broker名（在conf/activemq.xml中查看，默认是localhost）<br><img src="https://img-blog.csdnimg.cn/20190517100236186.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>主机状态<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,service=Health/CurrentStatus" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,service=Health/CurrentStatus</a><br>内存使用量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/MemoryPercentUsage" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/MemoryPercentUsage</a><br>磁盘空间使用量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/StorePercentUsage" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/StorePercentUsage</a><br>临时文件磁盘空间使用量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/TempPercentUsage" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/TempPercentUsage</a><br>未消费消息数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/QueueSize" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/QueueSize</a><br>消费者数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ConsumerCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ConsumerCount</a><br>已接收消息数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/EnqueueCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/EnqueueCount</a><br>已消费消息数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/DequeueCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/DequeueCount</a><br>生产者数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ProducerCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ProducerCount</a><br>获取所有队列名<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/Queues" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/Queues</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/如何监控ActiveMQ/" data-id="cjwhka22h001euwuvpycg36ca" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/如何监控ActiveMQ/" data-id="cjwhlc95t0017awuvnijoyyp1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -274,11 +511,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="安装ActiveMQ"><a href="#安装ActiveMQ" class="headerlink" title="安装ActiveMQ"></a>安装ActiveMQ</h1><p>安装ActiveMQ之前需要先安装好JDK并配置环境变量<br>可以通过Win+R，cmd，输入java -version来查看是否配置好了<br><a href="https://jingyan.baidu.com/article/6dad5075d1dc40a123e36ea3.html" target="_blank" rel="noopener">JDK的安装和环境配置</a></p>
+<h2 id="一、通过docker在linux安装ActiveMQ"><a href="#一、通过docker在linux安装ActiveMQ" class="headerlink" title="一、通过docker在linux安装ActiveMQ"></a>一、通过docker在linux安装ActiveMQ</h2><ol>
+<li><p>查找镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search activemq</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取latest镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull webcenter/activemq</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建容器同时后台启动activemq</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name myactivemq -p 61616:61616 -p 8161:8161 webcenter/activemq</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>安装完毕</p>
+<h2 id="二、通过压缩包在windows上安装ActiveMQ"><a href="#二、通过压缩包在windows上安装ActiveMQ" class="headerlink" title="二、通过压缩包在windows上安装ActiveMQ"></a>二、通过压缩包在windows上安装ActiveMQ</h2><p>一、下载ActiveMQ <a href="http://activemq.apache.org/components/classic/download/" target="_blank" rel="noopener">下载地址</a><br><img src="https://img-blog.csdnimg.cn/20190509143138158.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="下载ActiveMQ"><br>二、解压，进入bin，进入win64（如果电脑是32位的，进入win32），双击activemq.bat</p>
+<p>三、RabbitMQ和ActiveMQ默认的amqp端口号是一样的，所以如果之前启动了RabbitMQ需要先关闭，不然启动ActiveMQ的时候会报错<br><img src="https://img-blog.csdnimg.cn/20190509143850324.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>四、可以修改端口的配置，在conf下面的activemq.xml里面修改<br><img src="https://img-blog.csdnimg.cn/20190509144013319.jpg" alt="端口修改"><br>五、ActiveMQ启动以后默认的访问地址是<a href="http://localhost:8161/admin/，登录以后主界面" target="_blank" rel="noopener">http://localhost:8161/admin/，登录以后主界面</a><br><img src="https://img-blog.csdnimg.cn/2019050915204047.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="ActiveMQ主界面"></p>
+<p>六、修改端口号，在conf下面的jetty.xml文件<img src="https://img-blog.csdnimg.cn/20190509144547934.jpg" alt="修改端口号"><br>使用用请参考：<br><a href="https://blog.csdn.net/sinat_35757488/article/details/90273616" target="_blank" rel="noopener">ActiveMQ的代码使用</a><br><a href="https://blog.csdn.net/sinat_35757488/article/details/90273758" target="_blank" rel="noopener">ActiveMQ通过JmsTemplate来发送接收消息</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ的安装/" data-id="cjwhka21f0001uwuv0axphi2x" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ的安装/" data-id="cjwhlc9530008awuvxcrhb1qn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -312,11 +566,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>服务端代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zzuhai.socketdemo.socketpractice;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Integer port = <span class="number">12378</span>;</span><br><span class="line">        <span class="comment">// 等待连接</span></span><br><span class="line">        ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(port);</span><br><span class="line">        System.out.println(port + <span class="string">"等待连接。。。"</span>);</span><br><span class="line">        Socket socket = serverSocket.accept();</span><br><span class="line">        System.out.println(socket.getInetAddress() + <span class="string">":"</span> + socket.getPort() + <span class="string">"连接上了"</span>);</span><br><span class="line">        <span class="comment">// 发送消息给客户端</span></span><br><span class="line">        PrintWriter printWriter = <span class="keyword">new</span> PrintWriter(socket.getOutputStream());</span><br><span class="line">        printWriter.println(<span class="string">"server发送"</span>);</span><br><span class="line">        printWriter.flush();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 接收客户端消息</span></span><br><span class="line">        Scanner scanner = <span class="keyword">new</span> Scanner(socket.getInputStream());</span><br><span class="line">        System.out.println(scanner.nextLine());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zzuhai.socketdemo.socketpractice;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 连接服务端</span></span><br><span class="line">        Socket socket = <span class="keyword">new</span> Socket(<span class="string">"localhost"</span>, <span class="number">12378</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 接收服务端消息</span></span><br><span class="line">        Scanner scanner = <span class="keyword">new</span> Scanner(socket.getInputStream());</span><br><span class="line">        System.out.println(scanner.nextLine());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 发送消息给服务端</span></span><br><span class="line">        PrintWriter printWriter = <span class="keyword">new</span> PrintWriter(socket.getOutputStream());</span><br><span class="line">        printWriter.println(<span class="string">"client发送"</span>);</span><br><span class="line">        printWriter.flush();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/简单的实现socket通信/" data-id="cjwhka22l001luwuvngz6vs7d" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/简单的实现socket通信/" data-id="cjwhlc95v001bawuv5hb56ujk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/socket/">socket</a></li></ul>
@@ -350,11 +610,26 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h3 id="一、创建第三方包仓库"><a href="#一、创建第三方包仓库" class="headerlink" title="一、创建第三方包仓库"></a>一、创建第三方包仓库</h3><ol>
+<li>创建第三方jar包的仓库<img src="https://img-blog.csdnimg.cn/20190514215709589.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="待完成"></li>
+<li>选用hosted<br><img src="https://img-blog.csdnimg.cn/2019051421573665.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>取名为nexus-3rd<br><img src="https://img-blog.csdnimg.cn/20190514215912568.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>然后再public组中加入nexus-3rd，交给public管理<br><img src="https://img-blog.csdnimg.cn/2019051422003690.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h3 id="二、创建用户"><a href="#二、创建用户" class="headerlink" title="二、创建用户"></a>二、创建用户</h3>仓库创建完成以后可以创建一个管理的用户third：third123<br><img src="https://img-blog.csdnimg.cn/20190514221119784.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h3 id="三、上传jar包"><a href="#三、上传jar包" class="headerlink" title="三、上传jar包"></a>三、上传jar包</h3><h4 id="1-使用网页上传"><a href="#1-使用网页上传" class="headerlink" title="1.使用网页上传"></a>1.使用网页上传</h4></li>
+<li>点击upload，选择三方库<br><img src="https://img-blog.csdnimg.cn/20190514230823991.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>输入对应的数据，完成上传<br><img src="https://img-blog.csdnimg.cn/2019051423095435.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h4 id="2-使用cmd命令上传jar包"><a href="#2-使用cmd命令上传jar包" class="headerlink" title="2.使用cmd命令上传jar包"></a>2.使用cmd命令上传jar包</h4>在maven的setting文件中新增配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;server&gt;</span><br><span class="line">  &lt;id&gt;deploymentRepo&lt;/id&gt;</span><br><span class="line">  &lt;username&gt;third&lt;/username&gt;</span><br><span class="line">  &lt;password&gt;third123&lt;/password&gt;</span><br><span class="line">&lt;/server&gt;</span><br></pre></td></tr></table></figure>
+
+<p>cmd使用命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn deploy:deploy-file -DgroupId=com.zzuhai -DartifactId=myeureka -Dversion=0.0.2 -Dpackaging=jar -Dfile=F:\Idea_project\myeureka\target\myeureka-0.0.1-SNAPSHOT.jar -Durl=http://45.76.195.63:8081/repository/nexus-3rd/ -DrepositoryId=deploymentRepo</span><br></pre></td></tr></table></figure>
+
+<p>使用的时候需要修改对应的数据<br>上传成功<br><img src="https://img-blog.csdnimg.cn/20190514232940533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="结果展示"><a href="#结果展示" class="headerlink" title="结果展示"></a>结果展示</h4><p>两个jar包都上传成功，可以使用<br><img src="https://img-blog.csdnimg.cn/201905142305441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>程序中可以把依赖jar包拿下来<br><img src="https://img-blog.csdnimg.cn/20190514232315127.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/nexus如何上传自己的依赖包/" data-id="cjwhka228000yuwuvhbf60xo1" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/nexus如何上传自己的依赖包/" data-id="cjwhlc95m000wawuv31ov3ju4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nexus/">nexus</a></li></ul>
@@ -388,52 +663,57 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>必须要在jdk环境下才能搭建</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="一、使用docker来安装"><a href="#一、使用docker来安装" class="headerlink" title="一、使用docker来安装"></a>一、使用docker来安装</h2><ol>
+<li><p>查找nexus镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search nexus</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取latest镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull sonatype/nexus3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建并在后台启动nexus</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8081:8081 --name nexus sonatype/nexus3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以看一下是否启动</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>测试是否能连接</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -u admin:admin123 http://localhost:8081/service/metrics/ping</span><br></pre></td></tr></table></figure>
+
+<p>启动的时候有可能会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cannot set property TasksAccounting, or unknown property.</span><br></pre></td></tr></table></figure>
+
+<p>主要是centos系统版本兼容性问题，用以下命令升级</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update</span><br></pre></td></tr></table></figure>
+
+<p>之后再执行第三步<br>安装完毕</p>
+<h2 id="二、使用压缩包来安装"><a href="#二、使用压缩包来安装" class="headerlink" title="二、使用压缩包来安装"></a>二、使用压缩包来安装</h2><p>待完成</p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><ol>
+<li>首先访问<br><a href="http://45.76.195.63:8081，进入主页![在这里插入图片描述](https://img-blog.csdnimg.cn/20190514211724106.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70)" target="_blank" rel="noopener">http://45.76.195.63:8081，进入主页![在这里插入图片描述](https://img-blog.csdnimg.cn/20190514211724106.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70)</a></li>
+<li>然后登陆，默认的账号密码是admin：admin123<br>点击创建仓库<br><img src="https://img-blog.csdnimg.cn/20190514211850705.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>这三个都要创建<img src="https://img-blog.csdnimg.cn/20190514211923418.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>先来一个proxy<br><img src="https://img-blog.csdnimg.cn/20190514212054451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>再来一个hosted<br><img src="https://img-blog.csdnimg.cn/20190514212452524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>再来一个hosted<br><img src="https://img-blog.csdnimg.cn/2019051421251473.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>最后来一个group<br><img src="https://img-blog.csdnimg.cn/20190514212615607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>最后在maven的setting中配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;  </span><br><span class="line">    &lt;id&gt;nexus&lt;/id&gt;  </span><br><span class="line">    &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;  </span><br><span class="line">    &lt;url&gt;http://45.76.195.63:8081/repository/nexus-public/&lt;/url&gt;  </span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20190514212831723.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>之后就能够在maven程序中使用阿里云的依赖包了，并且可以使用自己上传的依赖包</p>
+<p>想知道怎么上传jar包到私库请看<a href="https://blog.csdn.net/sinat_35757488/article/details/90216045" target="_blank" rel="noopener">nexus如何上传自己的依赖包</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/搭建maven私库nexus/" data-id="cjwhka22f001auwuv4aw497w4" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/搭建maven私库nexus/" data-id="cjwhlc95t0018awuvs9uxjeod" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nexus/">nexus</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-没有bug的二分查找" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/没有bug的二分查找/" class="article-date">
-  <time datetime="2019-06-04T08:21:37.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/没有bug的二分查找/">没有bug的二分查找</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/没有bug的二分查找/" data-id="cjwhka22g001cuwuvlpmxoyug" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
 
     </footer>
   </div>
@@ -446,7 +726,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -470,7 +750,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -492,6 +772,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -505,10 +789,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

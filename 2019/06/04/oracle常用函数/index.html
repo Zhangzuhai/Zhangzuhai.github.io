@@ -7,15 +7,18 @@
   
   <title>oracle常用函数 | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="数据库">
+  <meta name="description" content="常用函数    函数 说明    ASCII(X) 返回字符X的ASCII码   CONCAT(X,Y) 连接字符串X和Y   INSTR(X,STR[,START][,N) 从X中查找str，可以指定从start开始，也可以指定从n开始   LENGTH(X) 返回X的长度   LOWER(X) X转换成小写   UPPER(X) X转换成大写   LTRIM(X[,TRIM_STR]) 把X的">
+<meta name="keywords" content="数据库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="oracle常用函数">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/oracle常用函数/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="常用函数    函数 说明    ASCII(X) 返回字符X的ASCII码   CONCAT(X,Y) 连接字符串X和Y   INSTR(X,STR[,START][,N) 从X中查找str，可以指定从start开始，也可以指定从n开始   LENGTH(X) 返回X的长度   LOWER(X) X转换成小写   UPPER(X) X转换成大写   LTRIM(X[,TRIM_STR]) 把X的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:33:53.420Z">
+<meta property="og:updated_time" content="2019-06-04T09:14:41.502Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="oracle常用函数">
+<meta name="twitter:description" content="常用函数    函数 说明    ASCII(X) 返回字符X的ASCII码   CONCAT(X,Y) 连接字符串X和Y   INSTR(X,STR[,START][,N) 从X中查找str，可以指定从start开始，也可以指定从n开始   LENGTH(X) 返回X的长度   LOWER(X) X转换成小写   UPPER(X) X转换成大写   LTRIM(X[,TRIM_STR]) 把X的">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +87,108 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>常用函数</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ASCII(X)</td>
+<td>返回字符X的ASCII码</td>
+</tr>
+<tr>
+<td>CONCAT(X,Y)</td>
+<td>连接字符串X和Y</td>
+</tr>
+<tr>
+<td>INSTR(X,STR[,START][,N)</td>
+<td>从X中查找str，可以指定从start开始，也可以指定从n开始</td>
+</tr>
+<tr>
+<td>LENGTH(X)</td>
+<td>返回X的长度</td>
+</tr>
+<tr>
+<td>LOWER(X)</td>
+<td>X转换成小写</td>
+</tr>
+<tr>
+<td>UPPER(X)</td>
+<td>X转换成大写</td>
+</tr>
+<tr>
+<td>LTRIM(X[,TRIM_STR])</td>
+<td>把X的左边截去trim_str字符串，缺省截去空格</td>
+</tr>
+<tr>
+<td>RTRIM(X[,TRIM_STR])</td>
+<td>把X的右边截去trim_str字符串，缺省截去空格</td>
+</tr>
+<tr>
+<td>TRIM([TRIM_STR  FROM]X)</td>
+<td>把X的两边截去trim_str字符串，缺省截去空格</td>
+</tr>
+<tr>
+<td>REPLACE(X,old,new)</td>
+<td>在X中查找old，并替换成new</td>
+</tr>
+<tr>
+<td>SUBSTR(X,start[,length])</td>
+<td>返回X的字串，从start处开始，截取length个字符，缺省length，默认到结尾</td>
+</tr>
+<tr>
+<td><strong>NVL(X,VALUE)</strong></td>
+<td><strong>如果X为空，返回value，否则返回X</strong></td>
+</tr>
+<tr>
+<td>NVL2(x,value1,value2)</td>
+<td>如果x非空，返回value1，否则返回value2</td>
+</tr>
+<tr>
+<td>lpad(string,n,[pad_string])</td>
+<td>string：字符或者参数；n：字符的长度，是返回的字符串的数量，如果这个数量比原字符串的长度要短，lpad函数将会把字符串截取成从左到右的n个字符；pad_string：可选参数，这个字符串是要粘贴到string的左边，若这个参数未写，lpad函数将会在string的左边粘贴空格。</td>
+</tr>
+<tr>
+<td>Rpad(string,n,[pad_string])</td>
+<td>和lpad相反</td>
+</tr>
+<tr>
+<td>to_char</td>
+<td>参考<a href="https://blog.csdn.net/xiaohuihui821/article/details/78652958" target="_blank" rel="noopener">https://blog.csdn.net/xiaohuihui821/article/details/78652958</a></td>
+</tr>
+<tr>
+<td>mod(m,n)</td>
+<td>m除以n的余数，如果n是0，返回m</td>
+</tr>
+<tr>
+<td>decode (expression, search_1, result_1, search_2, result_2, …., search_n, result_n)</td>
+<td>如果expression等于search_1，则返回result_1，以此类推</td>
+</tr>
+<tr>
+<td>trunc</td>
+<td>参考<a href="https://www.cnblogs.com/zfyouxi/p/5236336.html" target="_blank" rel="noopener">https://www.cnblogs.com/zfyouxi/p/5236336.html</a></td>
+</tr>
+</tbody></table>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lpad('tech', 7); 将返回' tech'</span><br><span class="line">lpad('tech', 2); 将返回'te'</span><br><span class="line">lpad('tech', 8, '0'); 将返回'0000tech'</span><br><span class="line">lpad('tech on the net', 15, 'z'); 将返回'tech on the net'</span><br><span class="line">lpad('tech on the net', 16, 'z'); 将返回'ztech on the net'</span><br></pre></td></tr></table></figure>
+
+<p>不等于：&lt;&gt;，!=，^=</p>
+<p>单行注释（中间没有空格）：- -</p>
+<p>多行注释：/**/</p>
+<h5 id="case函数"><a href="#case函数" class="headerlink" title="case函数"></a>case函数</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--简单Case函数  </span></span><br><span class="line">CASE sex  </span><br><span class="line">WHEN '1' THEN '男'  </span><br><span class="line">WHEN '2' THEN '女'  </span><br><span class="line">ELSE '其他' <span class="keyword">END</span>  </span><br><span class="line"><span class="comment">--Case搜索函数  </span></span><br><span class="line"><span class="keyword">CASE</span> <span class="keyword">WHEN</span> sex = <span class="string">'1'</span> <span class="keyword">THEN</span> <span class="string">'男'</span>  </span><br><span class="line"><span class="keyword">WHEN</span> sex = <span class="string">'2'</span> <span class="keyword">THEN</span> <span class="string">'女'</span>  </span><br><span class="line"><span class="keyword">ELSE</span> <span class="string">'其他'</span> <span class="keyword">END</span></span><br></pre></td></tr></table></figure>
+
+<p>Case函数只返回第一个符合条件的值，剩下的Case部分将会被自动忽略。</p>
+<h5 id="oracle查询空值"><a href="#oracle查询空值" class="headerlink" title="oracle查询空值"></a>oracle查询空值</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> mgr <span class="keyword">is</span> <span class="literal">null</span> 或<span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> mgr &lt;=<span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="oracle查询日期"><a href="#oracle查询日期" class="headerlink" title="oracle查询日期"></a>oracle查询日期</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">where to_char(t.pleg_date,'yyyy-mm-dd')='2019-05-28'</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/oracle常用函数/" data-id="cjwhka2290010uwuvooql8cy7" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/oracle常用函数/" data-id="cjwhlc95p0010awuvgwao5ymb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
@@ -140,7 +240,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +262,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +279,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

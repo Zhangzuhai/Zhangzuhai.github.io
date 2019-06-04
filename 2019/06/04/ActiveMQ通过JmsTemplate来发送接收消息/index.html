@@ -7,15 +7,18 @@
   
   <title>ActiveMQ通过JmsTemplate来发送接收消息 | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="MQ">
+  <meta name="description" content="添加activemq依赖 1234&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId&amp;gt;spring-boot-starter-activemq&amp;lt;/artifactId&amp;gt;&amp;lt;/dependency&amp;gt;  配置文件配置消息队列的地址 12">
+<meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ActiveMQ通过JmsTemplate来发送接收消息">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/ActiveMQ通过JmsTemplate来发送接收消息/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="添加activemq依赖 1234&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId&amp;gt;spring-boot-starter-activemq&amp;lt;/artifactId&amp;gt;&amp;lt;/dependency&amp;gt;  配置文件配置消息队列的地址 12">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:32:35.789Z">
+<meta property="og:updated_time" content="2019-06-04T09:13:51.984Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ActiveMQ通过JmsTemplate来发送接收消息">
+<meta name="twitter:description" content="添加activemq依赖 1234&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId&amp;gt;spring-boot-starter-activemq&amp;lt;/artifactId&amp;gt;&amp;lt;/dependency&amp;gt;  配置文件配置消息队列的地址 12">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +87,26 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>添加activemq依赖</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-activemq&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件配置消息队列的地址</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  activemq:</span><br><span class="line">#    broker地址 两个单机配置：failover:(tcp://localhost:61616,tcp://localhost:61617)?randomize=true</span><br><span class="line">    broker-url: tcp:<span class="comment">//127.0.0.1:61616</span></span><br><span class="line">    pool:</span><br><span class="line">      max-connections: <span class="number">100</span></span><br><span class="line">  jms:</span><br><span class="line">#    采用队列模式为false，主题模式为true</span><br><span class="line">    pub-sub-domain: <span class="keyword">false</span></span><br><span class="line">    cache:</span><br><span class="line">      session-cache-size: <span class="number">100</span></span><br><span class="line">    template:</span><br><span class="line">      receive-timeout: <span class="number">100</span></span><br><span class="line">#      是否持久化</span><br><span class="line">      delivery-mode: persistent</span><br></pre></td></tr></table></figure>
+
+<p>生产者代码(入参是队列名和消息)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.core.JmsTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.core.MessageCreator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jms.JMSException;</span><br><span class="line"><span class="keyword">import</span> javax.jms.Message;</span><br><span class="line"><span class="keyword">import</span> javax.jms.Session;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProducerService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> JmsTemplate jmsTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(String destination, <span class="keyword">final</span> String msg)</span></span>&#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName()+<span class="string">" 向队列"</span>+destination.toString()+<span class="string">"发送消息----------------------&gt;"</span>+msg);</span><br><span class="line">        jmsTemplate.send(destination, <span class="keyword">new</span> MessageCreator() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Message <span class="title">createMessage</span><span class="params">(Session session)</span> <span class="keyword">throws</span> JMSException </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> session.createTextMessage(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消费者监听队列接收消息（注解是队列名）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.jms.annotation.EnableJms;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.annotation.JmsListener;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jms.*;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@EnableJms</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerListener</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@JmsListener</span>(destination = <span class="string">"demoQueueDestination1"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">        String msg = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            msg = ((TextMessage)message).getText();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"listen:"</span>+msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消费者手动接收消息（入参是队列名）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jms.core.JmsTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jms.JMSException;</span><br><span class="line"><span class="keyword">import</span> javax.jms.TextMessage;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> JmsTemplate jmsTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">receive</span><span class="params">(String destination)</span> <span class="keyword">throws</span> JMSException,NullPointerException </span>&#123;</span><br><span class="line">        TextMessage textMessage = (TextMessage) jmsTemplate.receive(destination);</span><br><span class="line">        String text = textMessage.getText();</span><br><span class="line">        System.out.println(<span class="string">"从队列"</span> + destination.toString() + <span class="string">"收到了消息：\t"</span> + text);</span><br><span class="line">        <span class="keyword">return</span> text;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ通过JmsTemplate来发送接收消息/" data-id="cjwhka21p0008uwuvev8rjtn1" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/ActiveMQ通过JmsTemplate来发送接收消息/" data-id="cjwhlc9520006awuvpma364nq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -140,7 +158,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +180,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +197,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

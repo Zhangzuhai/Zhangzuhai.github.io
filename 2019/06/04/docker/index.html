@@ -7,15 +7,18 @@
   
   <title>docker | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="docker">
+  <meta name="description" content="安装CentOS7环境下使用命令 1yum install -y docker  安装完成启动docker 1systemctl start docker  关闭docker 1systemctl stop docker  常用命令在https://hub.docker.com镜像库中搜索需要下载的镜像在tag中找到需要的版本号或者  查找镜像 1docker search rabbitmq  拉">
+<meta name="keywords" content="docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/docker/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="安装CentOS7环境下使用命令 1yum install -y docker  安装完成启动docker 1systemctl start docker  关闭docker 1systemctl stop docker  常用命令在https://hub.docker.com镜像库中搜索需要下载的镜像在tag中找到需要的版本号或者  查找镜像 1docker search rabbitmq  拉">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:32:49.524Z">
+<meta property="og:updated_time" content="2019-06-04T09:11:19.543Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker">
+<meta name="twitter:description" content="安装CentOS7环境下使用命令 1yum install -y docker  安装完成启动docker 1systemctl start docker  关闭docker 1systemctl stop docker  常用命令在https://hub.docker.com镜像库中搜索需要下载的镜像在tag中找到需要的版本号或者  查找镜像 1docker search rabbitmq  拉">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +87,52 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>CentOS7环境下使用命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y docker</span><br></pre></td></tr></table></figure>
+
+<p>安装完成<br>启动docker</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>关闭docker</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop docker</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>在<a href="https://hub.docker.com镜像库中搜索需要下载的镜像" target="_blank" rel="noopener">https://hub.docker.com镜像库中搜索需要下载的镜像</a><br>在tag中找到需要的版本号<br>或者</p>
+<ul>
+<li><p>查找镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search rabbitmq</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull rabbitmq:3.6.12</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看本地镜像列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除镜像(删除镜像前，要删除所有使用到该镜像的容器,)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi 镜像id</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>强制删除镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi -f 镜像id</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看所有容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>强制删除容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm -f 容器id</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>容器操作</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -d </span><br><span class="line">#-d是后台启动</span><br><span class="line">docker start|stop|restart 容器id</span><br></pre></td></tr></table></figure>
+
+<pre><code>
+</code></pre>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/docker/" data-id="cjwhka224000ruwuvawckp63b" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/docker/" data-id="cjwhlc95g000mawuve8vq9eic" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -140,7 +184,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +206,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +223,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

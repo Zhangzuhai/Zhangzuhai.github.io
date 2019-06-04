@@ -7,15 +7,20 @@
   
   <title>如何监控ActiveMQ | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="MQ">
+  <meta name="description" content="通过JMX REST API来进行监控get请求访问下面的地址需要修改ip地址，端口（默认8161）修改地址中broker名（在conf/activemq.xml中查看，默认是localhost）主机状态http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,ser">
+<meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何监控ActiveMQ">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/如何监控ActiveMQ/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="通过JMX REST API来进行监控get请求访问下面的地址需要修改ip地址，端口（默认8161）修改地址中broker名（在conf/activemq.xml中查看，默认是localhost）主机状态http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,ser">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:35:11.461Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190517100236186.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-06-04T09:13:32.302Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何监控ActiveMQ">
+<meta name="twitter:description" content="通过JMX REST API来进行监控get请求访问下面的地址需要修改ip地址，端口（默认8161）修改地址中broker名（在conf/activemq.xml中查看，默认是localhost）主机状态http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,ser">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190517100236186.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +89,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h3 id="通过JMX-REST-API来进行监控"><a href="#通过JMX-REST-API来进行监控" class="headerlink" title="通过JMX REST API来进行监控"></a>通过JMX REST API来进行监控</h3><p>get请求访问下面的地址<br>需要修改ip地址，端口（默认8161）<br>修改地址中broker名（在conf/activemq.xml中查看，默认是localhost）<br><img src="https://img-blog.csdnimg.cn/20190517100236186.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>主机状态<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,service=Health/CurrentStatus" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,service=Health/CurrentStatus</a><br>内存使用量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/MemoryPercentUsage" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/MemoryPercentUsage</a><br>磁盘空间使用量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/StorePercentUsage" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/StorePercentUsage</a><br>临时文件磁盘空间使用量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/TempPercentUsage" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/TempPercentUsage</a><br>未消费消息数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/QueueSize" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/QueueSize</a><br>消费者数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ConsumerCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ConsumerCount</a><br>已接收消息数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/EnqueueCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/EnqueueCount</a><br>已消费消息数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/DequeueCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/DequeueCount</a><br>生产者数量<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ProducerCount" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名,destinationType=Queue,destinationName=队列名/ProducerCount</a><br>获取所有队列名<br><a href="http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/Queues" target="_blank" rel="noopener">http://120.79.150.160:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=broker名/Queues</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/如何监控ActiveMQ/" data-id="cjwhka22h001euwuvpycg36ca" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/如何监控ActiveMQ/" data-id="cjwhlc95t0017awuvnijoyyp1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -140,7 +146,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +168,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +185,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

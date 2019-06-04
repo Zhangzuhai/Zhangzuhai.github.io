@@ -7,15 +7,18 @@
   
   <title>没有bug的二分查找 | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="数据结构">
+  <meta name="description" content="今天看了几篇关于二分查找的文章知道了很多坑，在此记录一下，具体分析下次再来补充上以下是正确的代码 12345678910111213public static int binarySearch(int arr[], int value) &amp;#123;        int l = 0, r = arr.length;        while (l &amp;lt;= r) &amp;#123;">
+<meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="没有bug的二分查找">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/没有bug的二分查找/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="今天看了几篇关于二分查找的文章知道了很多坑，在此记录一下，具体分析下次再来补充上以下是正确的代码 12345678910111213public static int binarySearch(int arr[], int value) &amp;#123;        int l = 0, r = arr.length;        while (l &amp;lt;= r) &amp;#123;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:35:05.041Z">
+<meta property="og:updated_time" content="2019-06-04T09:07:44.870Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="没有bug的二分查找">
+<meta name="twitter:description" content="今天看了几篇关于二分查找的文章知道了很多坑，在此记录一下，具体分析下次再来补充上以下是正确的代码 12345678910111213public static int binarySearch(int arr[], int value) &amp;#123;        int l = 0, r = arr.length;        while (l &amp;lt;= r) &amp;#123;">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +87,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>今天看了几篇关于二分查找的文章<br>知道了很多坑，在此记录一下，具体分析下次再来补充上<br>以下是正确的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public static int binarySearch(int arr[], int value) &#123;</span><br><span class="line">        int l = 0, r = arr.length;</span><br><span class="line">        while (l &lt;= r) &#123;</span><br><span class="line">            int mid = l + (r - l) / 2;</span><br><span class="line">            if (arr[mid] == value)</span><br><span class="line">                return mid;</span><br><span class="line">            else if (value &gt; arr[mid])</span><br><span class="line">                l = mid + 1;</span><br><span class="line">            else</span><br><span class="line">                r = mid - 1;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/没有bug的二分查找/" data-id="cjwhka22g001cuwuvlpmxoyug" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/没有bug的二分查找/" data-id="cjwhlc95w001dawuv5y7rdx2y" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -140,7 +144,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +166,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +183,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>

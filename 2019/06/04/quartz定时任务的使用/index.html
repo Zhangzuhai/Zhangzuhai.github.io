@@ -7,15 +7,21 @@
   
   <title>quartz定时任务的使用 | zzuhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="java">
+  <meta name="description" content="需要加入jar包和配置文件待分享 配置文件需要修改的地方：调用的方法：说明：targetObject：想启动方法所在类的注解名targetMethod：想启动的方法名（注意这个方法不能有入参，不然会找不到方法）concurrent：为false时表示一次执行完了才执行下一次 需要配置文件中配置频率cronExpression=0/5 * * * * ? * 频率的具体配置见：cron表达式详解">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="quartz定时任务的使用">
 <meta property="og:url" content="http://zzuhai.github.io/2019/06/04/quartz定时任务的使用/index.html">
 <meta property="og:site_name" content="zzuhai">
+<meta property="og:description" content="需要加入jar包和配置文件待分享 配置文件需要修改的地方：调用的方法：说明：targetObject：想启动方法所在类的注解名targetMethod：想启动的方法名（注意这个方法不能有入参，不然会找不到方法）concurrent：为false时表示一次执行完了才执行下一次 需要配置文件中配置频率cronExpression=0/5 * * * * ? * 频率的具体配置见：cron表达式详解">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-04T08:34:00.988Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190604104118845.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190604104331626.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-06-04T09:16:37.614Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="quartz定时任务的使用">
+<meta name="twitter:description" content="需要加入jar包和配置文件待分享 配置文件需要修改的地方：调用的方法：说明：targetObject：想启动方法所在类的注解名targetMethod：想启动的方法名（注意这个方法不能有入参，不然会找不到方法）concurrent：为false时表示一次执行完了才执行下一次 需要配置文件中配置频率cronExpression=0/5 * * * * ? * 频率的具体配置见：cron表达式详解">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190604104118845.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70">
   
     <link rel="alternate" href="/atom.xml" title="zzuhai" type="application/atom+xml">
   
@@ -84,11 +90,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>需要加入jar包和配置文件<br>待分享</p>
+<p>配置文件需要修改的地方：<br><img src="https://img-blog.csdnimg.cn/20190604104118845.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>调用的方法：<br><img src="https://img-blog.csdnimg.cn/20190604104331626.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>说明：<br>targetObject：想启动方法所在类的注解名<br>targetMethod：想启动的方法名（注意这个方法不能有入参，不然会找不到方法）<br>concurrent：为false时表示一次执行完了才执行下一次</p>
+<p>需要配置文件中配置频率<br>cronExpression=0/5 * * * * ? *</p>
+<p>频率的具体配置见：<a href="https://blog.csdn.net/sinat_35757488/article/details/90764912" target="_blank" rel="noopener">cron表达式详解</a></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/quartz定时任务的使用/" data-id="cjwhka22a0012uwuvotrbi3ed" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/quartz定时任务的使用/" data-id="cjwhlc95n000yawuveybtfquk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -140,7 +150,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -162,6 +172,10 @@
       <ul>
         
           <li>
+            <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/堆/">堆</a>
           </li>
         
@@ -175,10 +189,6 @@
         
           <li>
             <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
       </ul>
