@@ -62,10 +62,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Spring Cloud Eureka 服务上下线监控" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-RSA加密使用详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/06/04/Spring Cloud Eureka 服务上下线监控/" class="article-date">
-  <time datetime="2019-06-04T06:50:05.000Z" itemprop="datePublished">2019-06-04</time>
+    <a href="/2019/06/04/RSA加密使用详解/" class="article-date">
+  <time datetime="2019-06-04T08:29:26.000Z" itemprop="datePublished">2019-06-04</time>
 </a>
     
   </div>
@@ -76,7 +76,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/Spring Cloud Eureka 服务上下线监控/">Spring Cloud Eureka 服务上下线监控</a>
+      <a class="article-title" href="/2019/06/04/RSA加密使用详解/">RSA加密使用详解</a>
     </h1>
   
 
@@ -84,356 +84,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>EurekaInstanceCanceledEvent 服务下线事件<br>EurekaInstanceRegisteredEvent 服务注册事件<br>EurekaInstanceRenewedEvent 服务续约事件<br>EurekaRegistryAvailableEvent Eureka注册中心启动事件<br>EurekaServerStartedEvent Eureka Server启动事件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.netflix.appinfo.InstanceInfo;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.netflix.eureka.server.event.*;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.event.EventListener;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Eureka事件监听</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> yinjihuan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2018-03-09 13:45</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EurekaStateChangeListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listen</span><span class="params">(EurekaInstanceCanceledEvent event)</span> </span>&#123;</span><br><span class="line">        System.err.println(event.getServerId() + <span class="string">"\t"</span> + event.getAppName() + <span class="string">" 服务下线"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listen</span><span class="params">(EurekaInstanceRegisteredEvent event)</span> </span>&#123;</span><br><span class="line">        InstanceInfo instanceInfo = event.getInstanceInfo();</span><br><span class="line">        System.err.println(instanceInfo.getAppName() + <span class="string">"进行注册"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listen</span><span class="params">(EurekaInstanceRenewedEvent event)</span> </span>&#123;</span><br><span class="line">        System.err.println(event.getServerId() + <span class="string">"\t"</span> + event.getAppName() + <span class="string">" 服务进行续约"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listen</span><span class="params">(EurekaRegistryAvailableEvent event)</span> </span>&#123;</span><br><span class="line">        System.err.println(<span class="string">"注册中心 启动"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listen</span><span class="params">(EurekaServerStartedEvent event)</span> </span>&#123;</span><br><span class="line">        System.err.println(<span class="string">"Eureka Server 启动"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Spring Cloud Eureka 服务上下线监控/" data-id="cjwhhumva0004oguvfdyhccnd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-JVM内存分配与回收" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/JVM内存分配与回收/" class="article-date">
-  <time datetime="2019-06-04T06:49:05.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/JVM内存分配与回收/">JVM内存分配与回收</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="JVM内存分配与回收"><a href="#JVM内存分配与回收" class="headerlink" title="JVM内存分配与回收"></a>JVM内存分配与回收</h5><h6 id="堆的结构"><a href="#堆的结构" class="headerlink" title="堆的结构"></a>堆的结构</h6><ul>
-<li>新生代：eden，ServivorFrom，ServivorTo</li>
-<li>老年代：tentired</li>
-</ul>
-<h6 id="新生代GC（Minor-GC）（复制-gt-清空-gt-互换）"><a href="#新生代GC（Minor-GC）（复制-gt-清空-gt-互换）" class="headerlink" title="新生代GC（Minor GC）（复制-&gt;清空-&gt;互换）"></a>新生代GC（Minor GC）（复制-&gt;清空-&gt;互换）</h6><ul>
-<li>eden 、 servicorFrom  复制到 ServicorTo，年龄+1</li>
-<li>清空 eden 、 servicorFrom</li>
-<li>ServicorTo 和 ServicorFrom 互换</li>
-</ul>
-<p>指发生新生代的的垃圾收集动作，Minor GC非常频繁，回收速度一般也比较快。</p>
-<h6 id="老年代GC（Major-GC-Full-GC）"><a href="#老年代GC（Major-GC-Full-GC）" class="headerlink" title="老年代GC（Major GC/Full GC）"></a>老年代GC（Major GC/Full GC）</h6><p>指发生在老年代的GC，出现了Major GC经常会伴随至少一次的Minor GC（并非绝对，在进行 MajorGC 前一般都先进行<br>了一次 MinorGC，使得有新生代的对象晋身入老年代，导致空间不够用时才触发），Major GC的速度一般会比Minor GC的慢10倍以上。</p>
-<h6 id="永久代（java8移除）"><a href="#永久代（java8移除）" class="headerlink" title="永久代（java8移除）"></a>永久代（java8移除）</h6><p>指内存的永久保存区域，主要存放 Class 和 Meta（元数据）的信息,Class 在被加载的时候被<br>放入永久区域，它和和存放实例的区域不同,GC 不会在主程序运行期对永久区域进行清理，也导致了永久代的区域会随着加载的 Class 的增多而胀满，最终抛出 OOM 异常。</p>
-<h6 id="元数据"><a href="#元数据" class="headerlink" title="元数据"></a>元数据</h6><p>在Java8中，永久代已经被移除，被一个称为“元数据区”（元空间）的区域所取代。元空间<br>的本质和永久代类似，元空间与永久代之间最大的区别在于：元空间并不在虚拟机中，而是使用<br>本地内存。因此，默认情况下，元空间的大小仅受本地内存限制。类的元数据放入 native<br>memory, 字符串池和类的静态变量放入 java 堆中，这样可以加载多少类的元数据就不再由<br>MaxPermSize 控制, 而由系统的实际可用空间来控制。</p>
-<p>大部分情况，对象都会首先在 Eden 区域分配，在一次新生代垃圾回收后，如果对象还存活，则会进入 servicorFrom 或者 ServicorTo，并且对象的年龄还会加 1(Eden区-&gt;Survivor 区后对象的初始年龄变为1)，当它的年龄增加到一定程度（默认为15岁），就会被晋升到老年代中。</p>
-<h6 id="大对象直接进入老年代（字符串，数组等）"><a href="#大对象直接进入老年代（字符串，数组等）" class="headerlink" title="大对象直接进入老年代（字符串，数组等）"></a>大对象直接进入老年代（字符串，数组等）</h6><h6 id="长期存活的对象进入老年代"><a href="#长期存活的对象进入老年代" class="headerlink" title="长期存活的对象进入老年代"></a>长期存活的对象进入老年代</h6><p>每熬过一次新生代GC年龄增加1岁，到一定年龄（默认15岁），进入老年代</p>
-<h6 id="动态对象年龄判定"><a href="#动态对象年龄判定" class="headerlink" title="动态对象年龄判定"></a>动态对象年龄判定</h6><p>如果 Survivor 空间中相同年龄所有对象大小的总和大于 Survivor 空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无需达到要求的年龄。（不一定必须要达到一定年龄）</p>
-<h5 id="判断对象死亡"><a href="#判断对象死亡" class="headerlink" title="判断对象死亡"></a>判断对象死亡</h5><h6 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h6><p>给对象中添加一个引用计数器，每当有一个地方引用它，计数器就加1；当引用失效，计数器就减1；任何时候计数器为0的对象就是不可能再被使用的。</p>
-<h6 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h6><p>通过一系列的称为 “GC Roots” 的对象作为起点，从这些节点开始向下搜索，节点所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连的话，则证明此对象是不可用的</p>
-<p>这两个算法都和引用相关</p>
-<ul>
-<li>强：不回收，即使抛内存溢出异常也不回收</li>
-<li>软：内存不足才回收</li>
-<li>弱：发现就回收，不管是否内存足够</li>
-<li>虚：任何时候都可能被回收，和没有任何引用一样</li>
-</ul>
-<h6 id="不可达对象不是立刻被回收"><a href="#不可达对象不是立刻被回收" class="headerlink" title="不可达对象不是立刻被回收"></a>不可达对象不是立刻被回收</h6><p>可达性分析法中不可达的对象被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行 finalize 方法。当对象没有覆盖 finalize 方法，或 finalize 方法已经被虚拟机调用过时，虚拟机将这两种情况视为没有必要执行。被判定为需要执行的对象将会被放在一个队列中进行第二次标记，除非这个对象与引用链上的任何一个对象建立关联，否则就会被真的回收。</p>
-<h6 id="判断一个常量是废弃常量（1-7以后，常量池在堆中）"><a href="#判断一个常量是废弃常量（1-7以后，常量池在堆中）" class="headerlink" title="判断一个常量是废弃常量（1.7以后，常量池在堆中）"></a>判断一个常量是废弃常量（1.7以后，常量池在堆中）</h6><p>在常量池中存在字符串 “abc”，如果当前没有任何String对象引用该字符串常量的话，就说明常量 “abc” 就是废弃常量,内存回收时，有必要就会被清出常量池</p>
-<h6 id="判断一个类是无用的类（无用类可以被回收）"><a href="#判断一个类是无用的类（无用类可以被回收）" class="headerlink" title="判断一个类是无用的类（无用类可以被回收）"></a>判断一个类是无用的类（无用类可以被回收）</h6><ul>
-<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
-<li>加载该类的 ClassLoader 已经被回收。</li>
-<li>该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
-</ul>
-<h4 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h4><h5 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h5><p>首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象</p>
-<h6 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h6><ul>
-<li>效率问题</li>
-<li>空间问题（标记清除后会产生大量不连续的碎片）<h5 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h5>为了解决效率问题，“复制”收集算法出现了。它可以将内存分为大小相同的两块，每次使用其中的一块。当这一块的内存使用完后，就将还存活的对象复制到另一块去，然后再把使用的空间一次清理掉。这样就使每次的内存回收都是对内存区间的一半进行回收。<h5 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h5>根据老年代的特点特出的一种标记算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象回收，而是让所有存活的对象向一端移动，然后直接清理掉端边界以外的内存。<h5 id="分代收集算法（为什么要分为新生代和老年代？）"><a href="#分代收集算法（为什么要分为新生代和老年代？）" class="headerlink" title="分代收集算法（为什么要分为新生代和老年代？）"></a>分代收集算法（为什么要分为新生代和老年代？）</h5>这个也不能说是算法，只是根据各个年代的特点选择合适的垃圾收集算法。<br>比如在新生代中，每次收集都会有大量对象死去，所以可以选择复制算法，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代的对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择“标记-清除”或“标记-整理”算法进行垃圾收集。<h4 id="分区收集算法"><a href="#分区收集算法" class="headerlink" title="分区收集算法"></a>分区收集算法</h4>分区算法则将整个堆空间划分为连续的不同小区间, 每个小区间独立使用, 独立回收. 这样做的<br>好处是可以控制一次回收多少个小区间 , 根据目标停顿时间, 每次合理地回收若干个小区间(而不是<br>整个堆), 从而减少一次 GC 所产生的停顿</li>
-</ul>
-<h4 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h4><p><img src="https://img-blog.csdn.net/20161228113643841?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></p>
-<h5 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h5><p>单线程，只会使用一条垃圾收集线程去完成垃圾收集工作，进行垃圾收集工作的时候Stop The World。</p>
-<p>新生代采用复制算法，老年代采用标记-整理算法。</p>
-<p>简单而高效（与其他收集器的单线程相比），没有线程交互的开销</p>
-<p>对于运行在Client模式下的虚拟机来说是个不错的选择。</p>
-<h5 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h5><p>ParNew收集器其实就是Serial收集器的多线程版本。</p>
-<p>可以通过-XX:ParallelGCThreads 参数来限制垃圾收集器的线程数</p>
-<p>新生代采用复制算法，老年代采用标记-整理算法。</p>
-<p>Server模式下的虚拟机的首要选择</p>
-<h5 id="Parallel-Scavenge收集器"><a href="#Parallel-Scavenge收集器" class="headerlink" title="Parallel Scavenge收集器"></a>Parallel Scavenge收集器</h5><p>Parallel Scavenge收集器关注点是吞吐量（高效率的利用CPU）。CMS等垃圾收集器的关注点更多的是用户线程的停顿时间（提高用户体验）。所谓吞吐量就是CPU中用于运行用户代码的时间与CPU总消耗时间的比值</p>
-<p>新生代采用复制算法，老年代采用标记-整理算法。</p>
-<h5 id="Serial-Old收集器（CMS的备用收集器）"><a href="#Serial-Old收集器（CMS的备用收集器）" class="headerlink" title="Serial Old收集器（CMS的备用收集器）"></a>Serial Old收集器（CMS的备用收集器）</h5><p>Serial收集器的老年代版本</p>
-<h5 id="Parallel-Old收集器"><a href="#Parallel-Old收集器" class="headerlink" title="Parallel Old收集器"></a>Parallel Old收集器</h5><p>Parallel Scavenge收集器的老年代版本</p>
-<h5 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h5><p>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。它而非常符合在注重用户体验的应用上使用。</p>
-<p>CMS（Concurrent Mark Sweep）收集器是HotSpot虚拟机第一款真正意义上的并发收集器，它第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</p>
-<h6 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h6><ul>
-<li>初始标记： 暂停所有的其他线程，并记录下直接与root相连的对象，速度很快 ；</li>
-<li>并发标记： 同时开启GC和用户线程，用一个闭包结构去记录可达对象。但在这个阶段结束，这个闭包结构并不能保证包含当前所有的可达对象。因为用户线程可能会不断的更新引用域，所以GC线程无法保证可达性分析的实时性。所以这个算法里会跟踪记录这些发生引用更新的地方。</li>
-<li>重新标记： 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</li>
-<li>并发清除： 开启用户线程，同时GC线程开始对为标记的区域做清扫。<br><img src="https://img-blog.csdn.net/20161228115819392?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1d2VuYm8wOTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="image"></li>
-</ul>
-<p>CMS垃圾收集器不能像其他垃圾收集器那样等待年老代机会完全被填满之后再进行收集，需要预留一部分空间供并发收集时的使用，可以通过参数-XX:CMSInitiatingOccupancyFraction来设置年老代空间达到多少的百分比时触发CMS进行垃圾收集，默认是68%。</p>
-<p>如果在CMS运行期间，预留的内存无法满足程序需要，就会出现一次ConcurrentMode Failure失败，此时虚拟机将启动预备方案，使用Serial Old收集器重新进行年老代垃圾回收。</p>
-<h6 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h6><p>并发收集、低停顿</p>
-<h6 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h6><ul>
-<li>对CPU资源敏感，其默认启动的收集线程数=(CPU数量+3)/4，在用户程序本来CPU负荷已经比较高的情况下，如果还要分出CPU资源用来运行垃圾收集器线程，会使得CPU负载加重。；</li>
-<li>无法处理浮动垃圾，在标记的过程中，不断有新的垃圾产生，但是没有标记到，只有下一次GC才能清除；</li>
-<li>它使用的回收算法-“标记-清除”算法会导致收集结束时会有大量空间碎片产生。如果无法找到一块足够大的连续内存存放对象时，将会触发因此Full GC，CMS提供一个开关参数-XX:+UseCMSCompactAtFullCollection，用于指定在Full GC之后进行内存整理，内存整理会使得垃圾收集停顿时间变长，CMS提供了另外一个参数-XX:CMSFullGCsBeforeCompaction，用于设置在执行多少次不压缩的Full GC之后，跟着再来一次内存整理。</li>
-</ul>
-<h5 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h5><ol>
-<li>基于标记-整理算法，不产生内存碎片。</li>
-<li>可以非常精确控制停顿时间，在不牺牲吞吐量前提下，实现低停顿垃圾回收</li>
-</ol>
-<p>G1 收集器避免全区域垃圾收集，<strong>它把堆内存划分为大小固定的几个独立区域</strong>，并且跟踪这些区域的垃圾收集进度，同时在后台维护一个优先级列表，每次根据所允许的收集时间，<strong>优先回收垃圾最多的区域</strong>。区域划分和优先级区域回收机制，确保 G1 收集器可以在有限时间获得最高的垃圾收<br>集效率</p>
-
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/JVM内存分配与回收/" data-id="cjwhhumvv000doguvcrxv0dqi" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-RabbitMQ安装和配置" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/RabbitMQ安装和配置/" class="article-date">
-  <time datetime="2019-06-04T06:47:05.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/RabbitMQ安装和配置/">RabbitMQ安装和配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="安装和操作"><a href="#安装和操作" class="headerlink" title="安装和操作"></a>安装和操作</h3><p>otp下载地址：<a href="http://www.erlang.org/downloads" target="_blank" rel="noopener">http://www.erlang.org/downloads</a></p>
-<p>otp安装教程：<a href="http://blog.51cto.com/10836356/2082658" target="_blank" rel="noopener">http://blog.51cto.com/10836356/2082658</a></p>
-<p>rabbitmq下载地址：<a href="http://www.rabbitmq.com/install-windows.html" target="_blank" rel="noopener">http://www.rabbitmq.com/install-windows.html</a></p>
-<p>rabbetmq安装教程：<a href="https://www.cnblogs.com/ericli-ericli/p/5902270.html" target="_blank" rel="noopener">https://www.cnblogs.com/ericli-ericli/p/5902270.html</a></p>
-<h6 id="激活RabbitMQ’s-Management-Plugin："><a href="#激活RabbitMQ’s-Management-Plugin：" class="headerlink" title="激活RabbitMQ’s Management Plugin："></a>激活RabbitMQ’s Management Plugin：</h6><p>“D:\Program Files\RabbitMQ Server\rabbitmq_server-3.6.5\sbin\rabbitmq-plugins.bat” enable rabbitmq_management</p>
-<h6 id="重启mq："><a href="#重启mq：" class="headerlink" title="重启mq："></a>重启mq：</h6><p>net stop RabbitMQ &amp;&amp; net start RabbitMQ</p>
-<p>以下命令都要在sbin目录下执行</p>
-<h4 id="用户相关"><a href="#用户相关" class="headerlink" title="用户相关"></a>用户相关</h4><h5 id="创建一个用户："><a href="#创建一个用户：" class="headerlink" title="创建一个用户："></a>创建一个用户：</h5><p>rabbitmqctl add_user username password</p>
-<h5 id="删除用户："><a href="#删除用户：" class="headerlink" title="删除用户："></a>删除用户：</h5><p>rabbitmqctl delete_user username </p>
-<h5 id="改密码"><a href="#改密码" class="headerlink" title="改密码:"></a>改密码:</h5><p>rabbimqctl change_password username newpassword</p>
-<h5 id="修改用户角色："><a href="#修改用户角色：" class="headerlink" title="修改用户角色："></a>修改用户角色：</h5><p>rabbitmqctl.bat set_user_tags username administrator</p>
-<h5 id="mq用户角色"><a href="#mq用户角色" class="headerlink" title="mq用户角色"></a>mq用户角色</h5><ul>
-<li><strong>超级管理员(administrator)</strong><br>可登陆管理控制台(启用management plugin的情况下)，可查看所有的信息，并且可以对用户，策略(policy)进行操作。</li>
-<li><strong>监控者(monitoring)</strong><br>可登陆管理控制台(启用management plugin的情况下)，同时可以查看rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等) </li>
-<li><strong>策略制定者(policymaker)</strong><br>可登陆管理控制台(启用management plugin的情况下), 同时可以对policy进行管理。</li>
-<li><strong>普通管理者(management)</strong><br>仅可登陆管理控制台(启用management plugin的情况下)，无法看到节点信息，也无法对策略进行管理。</li>
-<li><strong>其他的</strong><br>无法登陆管理控制台，通常就是普通的生产者和消费者。</li>
-</ul>
-<h4 id="host相关"><a href="#host相关" class="headerlink" title="host相关"></a>host相关</h4><h5 id="查看host列表："><a href="#查看host列表：" class="headerlink" title="查看host列表："></a>查看host列表：</h5><p>rabbitmqctl list_vhosts</p>
-<h5 id="添加host命令："><a href="#添加host命令：" class="headerlink" title="添加host命令："></a>添加host命令：</h5><p>rabbitmqctl add_vhost lifengtest</p>
-<h5 id="删除host命令："><a href="#删除host命令：" class="headerlink" title="删除host命令："></a>删除host命令：</h5><p>rabbitmqctl delete_vhost lifenghost</p>
-<h5 id="给新增的host增加用户和用户权限（后边三个-分别代表：配置权限、写权限、读权限）："><a href="#给新增的host增加用户和用户权限（后边三个-分别代表：配置权限、写权限、读权限）：" class="headerlink" title="给新增的host增加用户和用户权限（后边三个.*分别代表：配置权限、写权限、读权限）："></a>给新增的host增加用户和用户权限（后边三个.*分别代表：配置权限、写权限、读权限）：</h5><p>rabbitmqctl set_permissions -p vhostname username “.*” “.*” “.*”</p>
-<p>host添加完成以后<br>添加exchange<br>添加queue<br>绑定exchange和queue</p>
-<h3 id="原理及相关定义"><a href="#原理及相关定义" class="headerlink" title="原理及相关定义"></a>原理及相关定义</h3><p><img src="https://github.com/Zhangzuhai/gitrepository/raw/master/rabbitmq.png" alt="image"></p>
-<h4 id="Exchange类型"><a href="#Exchange类型" class="headerlink" title="Exchange类型"></a>Exchange类型</h4><h5 id="Direct-键（routing-key）分布"><a href="#Direct-键（routing-key）分布" class="headerlink" title="Direct 键（routing key）分布"></a>Direct 键（routing key）分布</h5><p>Direct：消息中的路由键（routing key）如果和 Binding 中的 binding key 一致，<br>交换器就将消息发到对应的队列中。它是完全匹配、单播的模式。</p>
-<h5 id="Fanout（广播分发）"><a href="#Fanout（广播分发）" class="headerlink" title="Fanout（广播分发）"></a>Fanout（广播分发）</h5><p>Fanout：每个发到 fanout 类型交换器的消息都会分到所有绑定的队列上去。很像子<br>网广播，每台子网内的主机都获得了一份复制的消息。fanout 类型转发消息是最快<br>的。</p>
-<h5 id="topic-交换器（模式匹配）"><a href="#topic-交换器（模式匹配）" class="headerlink" title="topic 交换器（模式匹配）"></a>topic 交换器（模式匹配）</h5><p>topic 交换器：topic 交换器通过模式匹配分配消息的路由键属性，将路由键和某个模<br>式进行匹配，此时队列需要绑定到一个模式上。它将路由键和绑定键的字符串切分成<br>单词，这些单词之间用点隔开。它同样也会识别两个通配符：符号“#”和符号<br>“”。#匹配 0 个或多个单词，匹配不多不少一个单词。<br><img src="https://github.com/Zhangzuhai/gitrepository/raw/master/rabbitmqtopic.png" alt="image"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/RabbitMQ安装和配置/" data-id="cjwhhumv80003oguvyvhjdncv" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Java多线程一篇就够了" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/Java多线程一篇就够了/" class="article-date">
-  <time datetime="2019-06-04T06:46:05.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/Java多线程一篇就够了/">Java多线程一篇就够了</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="JAVA-线程实现-创建方式"><a href="#JAVA-线程实现-创建方式" class="headerlink" title="JAVA  线程实现/创建方式"></a>JAVA  线程实现/创建方式</h4><h5 id="继承Thread类"><a href="#继承Thread类" class="headerlink" title="继承Thread类"></a>继承Thread类</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class MyThread extends Thread &#123;</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;MyThread.run()&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">MyThread myThread1 = new MyThread();</span><br><span class="line">myThread1.start();</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现Runnable接口"><a href="#实现Runnable接口" class="headerlink" title="实现Runnable接口"></a>实现Runnable接口</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class MyThread extends OtherClass implements Runnable &#123;</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;MyThread.run()&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//启动 MyThread，需要首先实例化一个 Thread，并传入自己的 MyThread 实例：</span><br><span class="line">MyThread myThread = new MyThread();</span><br><span class="line">Thread thread = new Thread(myThread);</span><br><span class="line">thread.start();</span><br><span class="line">//事实上，当传入一个 Runnable target 参数给 Thread 后，Thread 的 run()方法就会调用</span><br><span class="line">target.run()</span><br><span class="line">public void run() &#123;</span><br><span class="line">    if (target != null) &#123;</span><br><span class="line">        target.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="有返回值的线程"><a href="#有返回值的线程" class="headerlink" title="有返回值的线程"></a>有返回值的线程</h5><p>有返回值的任务必须实现 Callable 接口，类似的，无返回值的任务必须 Runnable 接口。执行<br>Callable 任务后，可以获取一个 Future 的对象，在该对象上调用 get 就可以获取到 Callable 任务<br>返回的 Object 了，再结合线程池接口 ExecutorService 就可以实现传说中有返回结果的多线程<br>了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//创建一个线程池</span><br><span class="line">ExecutorService pool = Executors.newFixedThreadPool(taskSize);</span><br><span class="line">// 创建多个有返回值的任务</span><br><span class="line">List&lt;Future&gt; list = new ArrayList&lt;Future&gt;();</span><br><span class="line">for (int i = 0; i &lt; taskSize; i++) &#123;</span><br><span class="line">    Callable c = new MyCallable(i + &quot; &quot;);</span><br><span class="line">    // 执行任务并获取 Future 对象</span><br><span class="line">    Future f = pool.submit(c);</span><br><span class="line">    list.add(f);</span><br><span class="line">&#125;</span><br><span class="line">// 关闭线程池</span><br><span class="line">pool.shutdown();</span><br><span class="line">// 获取所有并发任务的运行结果</span><br><span class="line">for (Future f : list) &#123;</span><br><span class="line">    // 从 Future 对象上获取任务的返回值，并输出到控制台</span><br><span class="line">    System.out.println(&quot;res：&quot; + f.get().toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="四种线程池"><a href="#四种线程池" class="headerlink" title="四种线程池"></a>四种线程池</h4><ul>
-<li>newCachedThreadPool</li>
-</ul>
-<p>创建一个<strong>可根据需要创建新线程</strong>的线程池，但是在以前构造的线程可用时将重用它们。对于执行很多短期异步任务的程序而言，这些线程池通常可提高程序性能。<strong>调用execute将重用以前构造的线程（如果线程可用）。如果现有线程没有可用的，则创建一个新线程并添加到池中。终止并从缓存中移除那些已有60秒钟未被使用的线程</strong>。因此，长时间保持空闲的线程池不会使用任何资<br>源。</p>
-<ul>
-<li>newFixedThreadPool</li>
-</ul>
-<p>创建一个<strong>可重用固定线程数的线程池</strong>，以共享的无界队列方式来运行这些线程。在任意点，在大多数nThreads线程会处于处理任务的活动状态。<strong>如果在所有线程处于活动状态时提交附加任务，则在有可用线程之前，附加任务将在队列中等待</strong>。如果在关闭前的执行期间由于失败而导致任何线程终止，那么一个新线程将代替它执行后续的任务（如果需要）。在某个线程被显式地关闭之<br>前，池中的线程将一直存在。</p>
-<ul>
-<li>newScheduledThreadPool</li>
-</ul>
-<p>创建一个线程池，它可安排<strong>在给定延迟后运行命令或者定期地执行</strong>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ScheduledExecutorService scheduledThreadPool= Executors.newScheduledThreadPool(3);</span><br><span class="line">scheduledThreadPool.schedule(newRunnable()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;延迟三秒&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, 3, TimeUnit.SECONDS);</span><br><span class="line">scheduledThreadPool.scheduleAtFixedRate(newRunnable()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;延迟 1 秒后每三秒执行一次&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,1,3,TimeUnit.SECONDS);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>newSingleThreadExecutor</li>
-</ul>
-<p>Executors.newSingleThreadExecutor()返回一个线程池（这个线程池只有一个线程）,这个线程<br>池可以在线程死后（或发生异常时）重新启动一个线程来替代原来的线程继续执行下去！</p>
-<h4 id="线程生命周期-状态"><a href="#线程生命周期-状态" class="headerlink" title="线程生命周期(状态)"></a>线程生命周期(状态)</h4><h5 id="新建状态（NEW-）"><a href="#新建状态（NEW-）" class="headerlink" title="新建状态（NEW ）"></a>新建状态（NEW ）</h5><p>当程序使用 new 关键字创建了一个线程之后，该线程就处于新建状态，此时仅由 JVM 为其分配内存，并初始化其成员变量的值</p>
-<h5 id="就绪状态（RUNNABLE-）："><a href="#就绪状态（RUNNABLE-）：" class="headerlink" title="就绪状态（RUNNABLE ）："></a>就绪状态（RUNNABLE ）：</h5><p>当线程对象调用了 start()方法之后，该线程处于就绪状态。Java 虚拟机会为其创建方法调用栈和程序计数器，等待调度运行。</p>
-<h5 id="运行状-态（RUNNING-）："><a href="#运行状-态（RUNNING-）：" class="headerlink" title="运行状 态（RUNNING ）："></a>运行状 态（RUNNING ）：</h5><p>如果处于就绪状态的线程获得了CPU，开始执行run()方法的线程执行体，则该线程处于运行状态。</p>
-<h5 id="阻塞状态（BLOCKED-）："><a href="#阻塞状态（BLOCKED-）：" class="headerlink" title="阻塞状态（BLOCKED ）："></a>阻塞状态（BLOCKED ）：</h5><p>阻塞状态是指线程因为某种原因放弃了 cpu 使用权，也即让出了 cpu timeslice，暂时停止运行。直到线程进入可运行(runnable)状态，才有机会再次获得 cpu timeslice 转到运行(running)状态。</p>
-<h6 id="阻塞的情况分三种："><a href="#阻塞的情况分三种：" class="headerlink" title="阻塞的情况分三种："></a>阻塞的情况分三种：</h6><ul>
-<li>等待阻塞 （ o.wait-&gt; 等待对列 ） ：<br>运行(running)的线程执行o.wait()方法，JVM会把该线程放入等待队列(waitting queue)<br>中。</li>
-<li>同步阻塞 (lock-&gt; 锁池 )<br>运行(running)的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则 JVM 会把该线程放入锁池(lock pool)中。</li>
-<li>其他阻塞 (sleep/join)<br>运行(running)的线程执行 Thread.sleep(long ms)或t.join()方法，或者发出了 I/O 请求时，JVM 会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者 I/O处理完毕时，线程重新转入可运行(runnable)状态。<h5 id="线程死亡（DEAD-）"><a href="#线程死亡（DEAD-）" class="headerlink" title="线程死亡（DEAD ）"></a>线程死亡（DEAD ）</h5>线程会以下面三种方式结束，结束后就是死亡状态。</li>
-<li>正常结束：<br>run()或 call()方法执行完成，线程正常结束。</li>
-<li>异常结束：<br>线程抛出一个未捕获的 Exception 或 Error。</li>
-<li>调用 stop：<br>直接调用该线程的stop()方法来结束该线程—该方法通常容易导致死锁，不推荐使用。</li>
-</ul>
-<p><img src="https://github.com/Zhangzuhai/gitrepository/raw/master/thread.jpg" alt="image"></p>
-<h4 id="终止线程4种方式"><a href="#终止线程4种方式" class="headerlink" title="终止线程4种方式"></a>终止线程4种方式</h4><ol>
-<li><h5 id="正常运行结束"><a href="#正常运行结束" class="headerlink" title="正常运行结束"></a>正常运行结束</h5></li>
-<li><h5 id="使用退出标志退出线程"><a href="#使用退出标志退出线程" class="headerlink" title="使用退出标志退出线程"></a>使用退出标志退出线程</h5></li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadSafe</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> exit = <span class="keyword">false</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!exit)&#123;</span><br><span class="line">            <span class="comment">//do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><h5 id="Interrupt方法结束线程"><a href="#Interrupt方法结束线程" class="headerlink" title="Interrupt方法结束线程"></a>Interrupt方法结束线程</h5></li>
-</ol>
-<ul>
-<li><strong>线程处于阻塞状态</strong>：如使用了 sleep,同步锁的 wait,socket 中的 receiver,accept 等方法时，会使线程处于阻塞状态。当调用线程的 interrupt()方法时，会抛出InterruptException异常。阻塞中的那个方法抛出这个异常，通过代码捕获该异常，然后break跳出循环状态，从而让我们有机会结束这个线程的执行。通常很多人认为只要调用interrupt 方法线程就会结束，实际上是错的，一定要先捕获InterruptedException 异常之后通过break来跳出循环，才能正常结束run方法。</li>
-<li><strong>线程未处于阻塞状态</strong>：使用isInterrupted()判断线程的中断标志来退出循环。当使用interrupt()方法时，中断标志就会置 true</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadSafe</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!isInterrupted())&#123; <span class="comment">//非阻塞过程中通过判断中断标志来退出</span></span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                Thread.sleep(<span class="number">5</span>*<span class="number">1000</span>);<span class="comment">//阻塞过程捕获中断异常来退出</span></span><br><span class="line">            &#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                <span class="keyword">break</span>;<span class="comment">//捕获到异常之后，执行 break 跳出循环</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li><h5 id="stop方法终止线程（线程不安全）"><a href="#stop方法终止线程（线程不安全）" class="headerlink" title="stop方法终止线程（线程不安全）"></a>stop方法终止线程（线程不安全）</h5>直接使用 thread.stop()来强行终止线程</li>
-</ol>
-<p>thread.stop()调用之后，创建子线程的线程就会抛出ThreadDeatherror的错误，并且会<strong>释放子线程所持有的所有锁</strong>。</p>
-<p>调用thread.stop()后导致了该线程所持有的所有锁的突然释放(不可控制)，那么被保护数据就有可能呈现不一致性，其他线程在使用这些被破坏的数据时，有可能导致一些很奇怪的应用程序错误</p>
-<h4 id="sleep-与-wait-区别"><a href="#sleep-与-wait-区别" class="headerlink" title="sleep 与 wait  区别"></a>sleep 与 wait  区别</h4><ol>
-<li>sleep()方法，属于<strong>Thread</strong>类。而wait()方法，属于<strong>Object</strong>类中的。</li>
-<li>sleep()方法导致了程序暂停执行指定的时间，让出 cpu 该其他线程，但是他的监控状态依然保持着，当指定的时间到了又会<strong>自动恢复运行状态</strong>。</li>
-<li>在调用 sleep()方法的过程中，线程<strong>不会释放对象锁</strong>。</li>
-<li>而当调用 wait()方法的时候，线程会<strong>放弃对象锁</strong>，进入等待此对象的等待锁定池，只有针对此对象<strong>调用notify()方法后本线程才进入对象锁定池准备获取对象锁进入运行状态</strong>。</li>
-</ol>
-<h4 id="start与run"><a href="#start与run" class="headerlink" title="start与run"></a>start与run</h4><ol>
-<li>start（）方法来启动线程，真正实现了多线程运行。这时无需等待run方法体代码执行完毕，可以直接继续执行下面的代码。</li>
-<li>通过调用Thread类的start()方法来启动一个线程，这时此线程是处于<strong>就绪状态</strong>，并没有运行。</li>
-<li>方法 run()称为线程体，它包含了要执行的这个线程的内容，开始运行run函数当中的代码，线程就进入了<strong>运行状态</strong>。Run方法运行结束，此线程终止。然后 CPU 再调度其它线程。</li>
-</ol>
-<h4 id="JAVA-后台线程"><a href="#JAVA-后台线程" class="headerlink" title="JAVA  后台线程"></a>JAVA  后台线程</h4><ol>
-<li>定义：守护线程–也称“服务线程”，他是后台线程，它有一个特性，即为用户线程提供公共服务，<strong>在没有用户线程可服务时会自动离开</strong>。</li>
-<li>优先级：守护线程的<strong>优先级比较低</strong>，用于为系统中的其它对象和线程提供服务。</li>
-<li>设置：<strong>通过 setDaemon(true) 来设置线程为“守护线程”</strong>；将一个用户线程设置为守护线程的方式是在线程对象创建之前用线程对象的 setDaemon方法。</li>
-<li><strong>在 Daemon 线程中产生的新线程也是 Daemon 的</strong>。</li>
-<li>线程则是<strong>JVM 级别的</strong>，以 Tomcat 为例，如果你在 Web 应用中启动一个线程，这个线程的生命周期并不会和Web应用程序保持同步。也就是说，即使你停止了 Web 应用，这个线程依旧是活跃的。</li>
-<li>example: 垃圾回收线程就是一个经典的守护线程，当我们的程序中不再有任何运行的Thread,程序就不会再产生垃圾，垃圾回收器也就无事可做，所以当垃圾回收线程是JVM上仅剩的线程时，垃圾回收线程会自动离开。它始终在低级别的状态中运行，用于实时监控和管理系统中的可回收资源。</li>
-<li>生命周期：守护进程（Daemon）是运行在后台的一种特殊进程。它独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。也就是说<strong>守护线程不依赖于终端，但是依赖于系统，与系统“同生共死”</strong>。当 JVM 中所有的线程都是守护线程的时候，JVM 就可以退出了；如果还有一个或以上的非守护线程则 JVM 不会退出。</li>
-</ol>
-<h4 id="线程基本方法"><a href="#线程基本方法" class="headerlink" title="线程基本方法"></a>线程基本方法</h4><p>wait，notify，notifyAll，sleep，join，yield等<br><img src="https://github.com/Zhangzuhai/gitrepository/raw/master/threadmethod.png" alt="image"></p>
-<h5 id="线程等待（wait-）"><a href="#线程等待（wait-）" class="headerlink" title="线程等待（wait ）"></a>线程等待（wait ）</h5><p>调用该方法的线程进入 WAITING 状态，只有<strong>等待另外线程的通知或被中断才会返回</strong>，需要注意的<br>是调用 wait()方法后，会<strong>释放对象的锁</strong>。因此，wait 方法一般用在同步方法或同步代码块中。</p>
-<h5 id="线程睡眠（sleep-）"><a href="#线程睡眠（sleep-）" class="headerlink" title="线程睡眠（sleep ）"></a>线程睡眠（sleep ）</h5><p>sleep 导致当前线程休眠，与 wait 方法不同的是 sleep <strong>不会释放当前占有的锁</strong>,sleep(long)会导致<br>线程进入 <strong>TIMED-WATING</strong> 状态，而 wait()方法会导致当前线程进入 WATING 状态</p>
-<h5 id="线程让步（yield-）"><a href="#线程让步（yield-）" class="headerlink" title="线程让步（yield ）"></a>线程让步（yield ）</h5><p>yield 会<strong>使当前线程让出 CPU 执行时间片</strong>，与其他线程一起重新竞争 CPU 时间片。一般情况下，<br>优先级高的线程有更大的可能性成功竞争得到 CPU 时间片，但这又不是绝对的，有的操作系统对<br>线程优先级并不敏感。</p>
-<h5 id="线程中断（interrupt-）"><a href="#线程中断（interrupt-）" class="headerlink" title="线程中断（interrupt ）"></a>线程中断（interrupt ）</h5><p>中断一个线程，其本意是给这个线程一个通知信号，会影响这个线程内部的一个中断标识位。这<br>个线程本身并不会因此而改变状态(如阻塞，终止等)。</p>
-<ol>
-<li>调用 interrupt()方法并不会中断一个正在运行的线程。也就是说处于 Running 状态的<strong>线程并不会因为被中断而被终止，仅仅改变了内部维护的中断标识位而已。</strong></li>
-<li>若调用 sleep()而使线程处于 TIMED-WATING 状态，这时调用 interrupt()方法，会抛出<br>InterruptedException,从而使线程提前结束 TIMED-WATING 状态。</li>
-<li>许多声明抛出 InterruptedException 的方法(如 Thread.sleep(long mills 方法))，<strong>抛出异<br>常前，都会清除中断标识位</strong>，所以抛出异常后，调用 isInterrupted()方法将会返回 false。</li>
-<li>中断状态是线程固有的一个标识位，可以通过此标识位安全的终止线程。比如,你想终止<br>一个线程thread的时候，可以调用<strong>thread.interrupt()方法</strong>，在线程的run方法内部可以<br>根据 <strong>thread.isInterrupted()的值</strong>来优雅的终止线程。</li>
-</ol>
-<h5 id="线程等待其他线程终止（Join）"><a href="#线程等待其他线程终止（Join）" class="headerlink" title="线程等待其他线程终止（Join）"></a>线程等待其他线程终止（Join）</h5><p>join() 方法，等待其他线程终止，在当前线程中调用一个线程的 join() 方法，则当前线程<strong>转为阻塞状态</strong>，直到另一个线程结束，当前线程再<strong>由阻塞状态变为就绪状态</strong>，等待 cpu 的宠幸。</p>
-<p><strong>主线程生成并启动了子线程，需要用到子线程返回的结果，也就是需要主线程需要在子线程结束后再结束，这时候就要用到 join() 方法。</strong></p>
-<h5 id="线程唤醒（notify-）"><a href="#线程唤醒（notify-）" class="headerlink" title="线程唤醒（notify ）"></a>线程唤醒（notify ）</h5><p>Object 类中的 notify() 方法，唤醒在此对象监视器上等待的单个线程，如果所有线程都在此对象上等待，则会选择唤醒其中一个线程，选择是任意的，并在对实现做出决定时发生，线程通过调用其中一个 wait() 方法，在对象的监视器上等待，直到当前的线程放弃此对象上的锁定，才能继续执行被唤醒的线程，被唤醒的线程将以常规方式与在该对象上主动同步的其他所有线程进行竞争。类似的方法还有 notifyAll() ，唤醒再次监视器上等待的所有线程。</p>
-<h5 id="其他线程相关方法"><a href="#其他线程相关方法" class="headerlink" title="其他线程相关方法"></a>其他线程相关方法</h5><ol>
-<li>sleep()：强迫一个线程睡眠Ｎ毫秒。</li>
-<li>isAlive()： 判断一个线程是否存活。</li>
-<li>join()： 等待线程终止。</li>
-<li>activeCount()： 程序中活跃的线程数。</li>
-<li>enumerate()： 枚举程序中的线程。</li>
-<li>currentThread()： 得到当前线程。</li>
-<li>isDaemon()： 一个线程是否为守护线程。</li>
-<li>setDaemon()：设置一个线程为守护线程。(用户线程和守护线程的区别在于，是否等待主线程依赖于主线程结束而结束)</li>
-<li>setName()： 为线程设置一个名称。</li>
-<li>wait()： 强迫一个线程等待。</li>
-<li>notify()： 通知一个线程继续运行。</li>
-<li>setPriority()： 设置一个线程的优先级。</li>
-<li>getPriority():：获得一个线程的优先级。</li>
-</ol>
-<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><h4 id="线程池的组成"><a href="#线程池的组成" class="headerlink" title="线程池的组成"></a>线程池的组成</h4><ol>
-<li>线程池管理器：用于创建并管理线程池</li>
-<li>工作线程：线程池中的线程</li>
-<li>任务接口：每个任务必须实现的接口，用于工作线程调度其运行</li>
-<li>任务队列：用于存放待处理的任务，提供一种缓冲机制</li>
-</ol>
-<h4 id="TheadPoolExecutor构造方法"><a href="#TheadPoolExecutor构造方法" class="headerlink" title="TheadPoolExecutor构造方法"></a>TheadPoolExecutor构造方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,<span class="keyword">int</span> maximumPoolSize, <span class="keyword">long</span> keepAliveTime, TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,Executors.defaultThreadFactory(), defaultHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>corePoolSize：指定了线程池中的线程数量。</li>
-<li>maximumPoolSize：指定了线程池中的最大线程数量。</li>
-<li>keepAliveTime：当前线程池数量超过 corePoolSize 时，多余的空闲线程的存活时间，即多<br>次时间内会被销毁。</li>
-<li>unit：keepAliveTime 的单位。</li>
-<li>workQueue：任务队列，被提交但尚未被执行的任务。</li>
-<li>threadFactory：线程工厂，用于创建线程，一般用默认的即可。</li>
-<li>handler：拒绝策略，当任务太多来不及处理，如何拒绝任务。</li>
-</ol>
-<h4 id="拒绝策略"><a href="#拒绝策略" class="headerlink" title="拒绝策略"></a>拒绝策略</h4><p>线程池中的线程已经用完了，无法继续为新任务服务，同时，等待队列也已经排满了，再也<br>塞不下新任务了。这时候我们就需要拒绝策略机制合理的处理这个问题。<br>JDK 内置的拒绝策略如下：</p>
-<ol>
-<li>AbortPolicy ： <strong>直接抛出异常</strong>，阻止系统正常运行。</li>
-<li>CallerRunsPolicy ： 只要线程池未关闭，该策略直接在调用者线程中，运行当前被丢弃的任务。显然这样做不会真的丢弃任务，但是，任务提交线程的性能极有可能会急剧下降。</li>
-<li>DiscardOldestPolicy ： <strong>丢弃</strong>最老的一个请求，也就是<strong>即将被执行的一个任务</strong>，并尝试再<br>次提交当前任务。</li>
-<li>DiscardPolicy ： 该策略默默地<strong>丢弃无法处理的任务</strong>，不予任何处理。如果允许任务丢失，这是最好的一种方案。</li>
-</ol>
-<p>以上内置拒绝策略均实现了 RejectedExecutionHandler 接口，若以上策略仍无法满足实际需要，完全可以自己扩展 RejectedExecutionHandler 接口。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Java多线程一篇就够了/" data-id="cjwhhumw2000goguvqmu6evin" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/RSA加密使用详解/" data-id="cjwhjsplt000cu8uv15gz0osb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -445,10 +100,10 @@
 
 
   
-    <article id="post-3DES-CBC-PKCS-7Padding加密解密" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-cron表达式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/" class="article-date">
-  <time datetime="2019-06-04T06:44:05.000Z" itemprop="datePublished">2019-06-04</time>
+    <a href="/2019/06/04/cron表达式详解/" class="article-date">
+  <time datetime="2019-06-04T08:29:10.000Z" itemprop="datePublished">2019-06-04</time>
 </a>
     
   </div>
@@ -459,7 +114,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/">3DES/CBC/PKCS/7Padding加密解密</a>
+      <a class="article-title" href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
     </h1>
   
 
@@ -467,12 +122,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>加密解密方法如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 加密.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key  key</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 数据</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 加密后字符串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">des3EncodeECB</span><span class="params">(String key, String data, String token)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] ivs = hex2byte(token);</span><br><span class="line">    <span class="keyword">byte</span>[] keyBytes = hex2byte(key);</span><br><span class="line">    <span class="keyword">byte</span>[] iv2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">8</span>;i++) &#123;</span><br><span class="line">        iv2[i] = ivs[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Key deskey = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// 初始化</span></span><br><span class="line">        Security.addProvider(<span class="keyword">new</span> BouncyCastleProvider());</span><br><span class="line">        <span class="comment">// 转化成JAVA的密钥格式</span></span><br><span class="line">        deskey = <span class="keyword">new</span> SecretKeySpec(keyBytes, <span class="string">"desede"</span>);</span><br><span class="line">        Cipher cipher = Cipher.getInstance(<span class="string">"desede/CBC/PKCS7Padding"</span>);</span><br><span class="line">        cipher.init(Cipher.ENCRYPT_MODE, deskey, <span class="keyword">new</span> IvParameterSpec(iv2));</span><br><span class="line">        <span class="keyword">byte</span>[] bOut = cipher.doFinal(data.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">        <span class="keyword">return</span> Base64.getEncoder().encodeToString(bOut);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        System.out.println(e.toString());</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 3DES解密</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key    加密密钥，长度为24字节</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> desStr 解密后的字符串</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> lee on 2017-08-09 10:52:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">decode3Des</span><span class="params">(String key, String desStr, String token)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] keybyte = hex2byte(key);</span><br><span class="line">    <span class="keyword">byte</span>[] src = Base64.getDecoder().decode(desStr);</span><br><span class="line">    <span class="keyword">byte</span>[] ivs = hex2byte(token);</span><br><span class="line">    <span class="keyword">byte</span>[] iv2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">8</span>;i++) &#123;</span><br><span class="line">        iv2[i] = ivs[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Key deskey = <span class="keyword">null</span>;</span><br><span class="line">        Security.addProvider(<span class="keyword">new</span> BouncyCastleProvider());</span><br><span class="line">        <span class="comment">// 转化成JAVA的密钥格式</span></span><br><span class="line">        deskey = <span class="keyword">new</span> SecretKeySpec(keybyte, <span class="string">"desede"</span>);</span><br><span class="line">        Cipher cipher = Cipher.getInstance(<span class="string">"desede/CBC/PKCS7Padding"</span>);</span><br><span class="line">        cipher.init(Cipher.DECRYPT_MODE, deskey, <span class="keyword">new</span> IvParameterSpec(iv2));</span><br><span class="line">        String pwd = <span class="keyword">new</span> String(cipher.doFinal(src), <span class="string">"utf-8"</span>);</span><br><span class="line">        <span class="keyword">return</span> pwd;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e1) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(e1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 十六进制转二进制.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> hex 十六进制</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 二进制</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] hex2byte(String hex) &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] bts = <span class="keyword">new</span> <span class="keyword">byte</span>[hex.length() / <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; bts.length; i++) &#123;</span><br><span class="line">        bts[i] = (<span class="keyword">byte</span>) Integer.parseInt(hex.substring(<span class="number">2</span> * i, <span class="number">2</span> * i + <span class="number">2</span>), <span class="number">16</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bts;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/" data-id="cjwhhumv40001oguvs24js6ze" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/cron表达式详解/" data-id="cjwhjspm6000ru8uv76abzawa" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -484,10 +138,10 @@
 
 
   
-    <article id="post-3DES-CBC-PKCS-5Padding加密解密" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-quartz定时任务的使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/06/04/3DES-CBC-PKCS-5Padding加密解密/" class="article-date">
-  <time datetime="2019-06-04T06:38:49.000Z" itemprop="datePublished">2019-06-04</time>
+    <a href="/2019/06/04/quartz定时任务的使用/" class="article-date">
+  <time datetime="2019-06-04T08:28:50.000Z" itemprop="datePublished">2019-06-04</time>
 </a>
     
   </div>
@@ -498,7 +152,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/3DES-CBC-PKCS-5Padding加密解密/">3DES/CBC/PKCS/5Padding加密解密</a>
+      <a class="article-title" href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
     </h1>
   
 
@@ -506,12 +160,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>加解密的工具类SecurityDESUtil：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.codec.binary.Base64;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.crypto.Cipher;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKey;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKeyFactory;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.DESKeySpec;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.IvParameterSpec;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.SecretKeySpec;</span><br><span class="line"><span class="keyword">import</span> java.nio.charset.Charset;</span><br><span class="line"><span class="keyword">import</span> java.security.Security;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  解密工具类</span></span><br><span class="line"><span class="comment"> *  将AppKey转换为byte[]</span></span><br><span class="line"><span class="comment"> *   将Token转换为向量IV</span></span><br><span class="line"><span class="comment"> *  使用3des解密，运算模式CBC,填充模式PKCS7。获得解密后是byte[],使用utf8编码格式转换为字符串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityDESUtil</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SECRET_KEY = <span class="string">"DESede"</span>;</span><br><span class="line">    <span class="comment">//3des解密，运算模式CBC,填充模式PKCS7</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CIPHER = <span class="string">"DESede/CBC/PKCS5Padding"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset CHARSET = Charset.forName(<span class="string">"UTF-8"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span>  Cipher cipher = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span>  SecretKey key = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span>  &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(SecurityDESUtil.class)&#123;</span><br><span class="line">                cipher = Cipher.getInstance(CIPHER);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] getAppKey(String appKey) &#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">byte</span>[] appKeys = parseHexStr2Byte(appKey);</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">byte</span>[] tmpkey =&#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span> &#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> ii = <span class="number">0</span>; ii &lt; tmpkey.length; ii++)</span><br><span class="line">        &#123;</span><br><span class="line">            tmpkey[ii] = appKeys[ii];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tmpkey;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加密</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> iv</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> content</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> String <span class="title">encrypt</span><span class="params">(String appKey, String iv, String content)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] tmpKey = getAppKey(appKey);</span><br><span class="line">            key = <span class="keyword">new</span> SecretKeySpec(tmpKey, SECRET_KEY);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] tmpiv = getIv(iv);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] contentBytes = content.getBytes(CHARSET);</span><br><span class="line">            <span class="keyword">final</span>  IvParameterSpec ivParameterSpec = <span class="keyword">new</span> IvParameterSpec(tmpiv);</span><br><span class="line">            cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] bytes = cipher.doFinal(contentBytes);</span><br><span class="line">            <span class="keyword">return</span> Base64.encodeBase64String(bytes);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] getIv(String iv) &#123;</span><br><span class="line">        <span class="keyword">final</span>  <span class="keyword">byte</span>[] byteIv = parseHexStr2Byte(iv);</span><br><span class="line">        <span class="keyword">byte</span>[] tmpiv =&#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span> &#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tmpiv.length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            tmpiv[i] = byteIv[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tmpiv;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解密</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> iv</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> content</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> String <span class="title">decrypt</span><span class="params">(String appKey, String iv, String content)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] tmpKey = getAppKey(appKey);</span><br><span class="line">            key = <span class="keyword">new</span> SecretKeySpec(tmpKey, SECRET_KEY);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] byteIv = getIv(iv);</span><br><span class="line">            <span class="keyword">final</span> IvParameterSpec ivParameterSpec = <span class="keyword">new</span> IvParameterSpec(byteIv);</span><br><span class="line">            <span class="comment">// CBC requires an initialization vector</span></span><br><span class="line">            cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] decoderStr = Base64.decodeBase64(content);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] bytes = cipher.doFinal(decoderStr,<span class="number">0</span>,decoderStr.length);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> String(bytes,CHARSET);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将二进制转换成16进制</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> buf</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>  String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> String <span class="title">parseByte2HexStr</span><span class="params">(<span class="keyword">byte</span> buf[])</span> </span>&#123;</span><br><span class="line">        StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; buf.length; i++) &#123;</span><br><span class="line">            String hex = Integer.toHexString(buf[i] &amp; <span class="number">0xFF</span>);</span><br><span class="line">            <span class="keyword">if</span> (hex.length() == <span class="number">1</span>) &#123;</span><br><span class="line">                hex = <span class="string">'0'</span> + hex;</span><br><span class="line">            &#125;</span><br><span class="line">            sb.append(hex.toUpperCase());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将16进制转换为二进制</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> hexStr</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>  byte[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] parseHexStr2Byte(String hexStr) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hexStr.length() &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] result = <span class="keyword">new</span> <span class="keyword">byte</span>[hexStr.length()/<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i&lt; hexStr.length()/<span class="number">2</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> high = Integer.parseInt(hexStr.substring(i*<span class="number">2</span>, i*<span class="number">2</span>+<span class="number">1</span>), <span class="number">16</span>);</span><br><span class="line">            <span class="keyword">int</span> low = Integer.parseInt(hexStr.substring(i*<span class="number">2</span>+<span class="number">1</span>, i*<span class="number">2</span>+<span class="number">2</span>), <span class="number">16</span>);</span><br><span class="line">            result[i] = (<span class="keyword">byte</span>) (high * <span class="number">16</span> + low);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/3DES-CBC-PKCS-5Padding加密解密/" data-id="cjwhhumuy0000oguvot4k0u5w" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/quartz定时任务的使用/" data-id="cjwhjspmc0013u8uvgy3hifyp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -523,10 +176,10 @@
 
 
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Java导出数据到excel" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/06/04/hello-world/" class="article-date">
-  <time datetime="2019-06-04T05:58:54.811Z" itemprop="datePublished">2019-06-04</time>
+    <a href="/2019/06/04/Java导出数据到excel/" class="article-date">
+  <time datetime="2019-06-04T08:28:16.000Z" itemprop="datePublished">2019-06-04</time>
 </a>
     
   </div>
@@ -537,7 +190,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/hello-world/">Hello World</a>
+      <a class="article-title" href="/2019/06/04/Java导出数据到excel/">Java导出数据到excel</a>
     </h1>
   
 
@@ -545,26 +198,243 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/hello-world/" data-id="cjwhhumvu000coguvf0484hsi" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/Java导出数据到excel/" data-id="cjwhjsplv000eu8uv3qkusmm9" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Guava缓存的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/Guava缓存的使用/" class="article-date">
+  <time datetime="2019-06-04T08:27:59.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/Guava缓存的使用/">Guava缓存的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/Guava缓存的使用/" data-id="cjwhjsplq0009u8uv2q6g7skw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-SQL学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/SQL学习/" class="article-date">
+  <time datetime="2019-06-04T08:26:03.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/SQL学习/">SQL学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/SQL学习/" data-id="cjwhjspm0000ju8uvfo74e6vq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-堆" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/堆/" class="article-date">
+  <time datetime="2019-06-04T08:25:45.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/堆/">堆</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/堆/" data-id="cjwhjspmg001cu8uvnefi97u1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/">????</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring-boot发送邮件mail" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/spring-boot发送邮件mail/" class="article-date">
+  <time datetime="2019-06-04T08:25:21.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/spring-boot发送邮件mail/">spring boot发送邮件mail</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/spring-boot发送邮件mail/" data-id="cjwhjspme0018u8uv6lsvkho5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring-boot使用mybatis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/spring-boot使用mybatis/" class="article-date">
+  <time datetime="2019-06-04T08:25:04.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/spring-boot使用mybatis/">spring boot使用mybatis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/spring-boot使用mybatis/" data-id="cjwhjspmd0015u8uvj7646tmt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-oracle常用函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/oracle常用函数/" class="article-date">
+  <time datetime="2019-06-04T08:24:46.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/oracle常用函数/">oracle常用函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/oracle常用函数/" data-id="cjwhjspma0010u8uvlp5owtaj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
     </footer>
   </div>
   
@@ -573,6 +443,11 @@
 
   
 
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+  </nav>
 
 </section>
         
@@ -585,7 +460,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/">????</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/groovy/">groovy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nexus/">nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
     </div>
   </div>
 
@@ -595,7 +470,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/spring-cloud/" style="font-size: 10px;">spring cloud</a>
+      <a href="/tags/" style="font-size: 10px;">????</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 17.5px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12.5px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12.5px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12.5px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
     </div>
   </div>
 
@@ -617,23 +492,23 @@
       <ul>
         
           <li>
-            <a href="/2019/06/04/Spring Cloud Eureka 服务上下线监控/">Spring Cloud Eureka 服务上下线监控</a>
+            <a href="/2019/06/04/RSA加密使用详解/">RSA加密使用详解</a>
           </li>
         
           <li>
-            <a href="/2019/06/04/JVM内存分配与回收/">JVM内存分配与回收</a>
+            <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
           </li>
         
           <li>
-            <a href="/2019/06/04/RabbitMQ安装和配置/">RabbitMQ安装和配置</a>
+            <a href="/2019/06/04/quartz定时任务的使用/">quartz定时任务的使用</a>
           </li>
         
           <li>
-            <a href="/2019/06/04/Java多线程一篇就够了/">Java多线程一篇就够了</a>
+            <a href="/2019/06/04/Java导出数据到excel/">Java导出数据到excel</a>
           </li>
         
           <li>
-            <a href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/">3DES/CBC/PKCS/7Padding加密解密</a>
+            <a href="/2019/06/04/Guava缓存的使用/">Guava缓存的使用</a>
           </li>
         
       </ul>
