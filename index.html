@@ -62,6 +62,146 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Mysql优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/05/Mysql优化/" class="article-date">
+  <time datetime="2019-06-05T01:58:09.000Z" itemprop="datePublished">2019-06-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/05/Mysql优化/">Mysql优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载：segmentfault.com/a/1190000012155267</p>
+<h1 id="一、EXPLAIN"><a href="#一、EXPLAIN" class="headerlink" title="一、EXPLAIN"></a>一、EXPLAIN</h1><p>做MySQL优化，我们要善用 EXPLAIN 查看SQL执行计划。<br>下面来个简单的示例，标注(1,2,3,4,5)我们要重点关注的数据<br><img src="https://img-blog.csdnimg.cn/20190604223627376.png" alt="在这里插入图片描述"> 1. type列，连接类型。一个好的sql语句至少要达到range级别。杜绝出现all级别</p>
+<ol start="2">
+<li>key列，使用到的索引名。如果没有选择索引，值是NULL。可以采取强制索引方式</li>
+<li>key_len列，索引长度</li>
+<li>rows列，扫描行数。该值是个预估值</li>
+<li>extra列，详细说明。注意常见的不太友好的值有：Using filesort, Using temporary<h1 id="二、SQL语句中IN包含的值不应过多"><a href="#二、SQL语句中IN包含的值不应过多" class="headerlink" title="二、SQL语句中IN包含的值不应过多"></a>二、SQL语句中IN包含的值不应过多</h1>MySQL对于IN做了相应的优化，即将IN中的常量全部存储在一个数组里面，而且这个数组是排好序的。但是如果数值较多，产生的消耗也是比较大的。再例如：select id from table_name where num in(1,2,3) 对于连续的数值，能用 between 就不要用 in 了；再或者使用连接来替换。<h1 id="三、SELECT语句务必指明字段名称"><a href="#三、SELECT语句务必指明字段名称" class="headerlink" title="三、SELECT语句务必指明字段名称"></a>三、SELECT语句务必指明字段名称</h1>SELECT *增加很多不必要的消耗（cpu、io、内存、网络带宽）；增加了使用覆盖索引的可能性；当表结构发生改变时，前断也需要更新。所以要求直接在select后面接上字段名。<h1 id="四、当只需要一条数据的时候，使用limit-1"><a href="#四、当只需要一条数据的时候，使用limit-1" class="headerlink" title="四、当只需要一条数据的时候，使用limit 1"></a>四、当只需要一条数据的时候，使用limit 1</h1>这是为了使EXPLAIN中type列达到const类型<h1 id="五、如果排序字段没有用到索引，就尽量少排序"><a href="#五、如果排序字段没有用到索引，就尽量少排序" class="headerlink" title="五、如果排序字段没有用到索引，就尽量少排序"></a>五、如果排序字段没有用到索引，就尽量少排序</h1><h1 id="六、如果限制条件中其他字段没有索引，尽量少用or"><a href="#六、如果限制条件中其他字段没有索引，尽量少用or" class="headerlink" title="六、如果限制条件中其他字段没有索引，尽量少用or"></a>六、如果限制条件中其他字段没有索引，尽量少用or</h1>or两边的字段中，如果有一个不是索引字段，而其他条件也不是索引字段，会造成该查询不走索引的情况。很多时候使用 union all 或者是union(必要的时候)的方式来代替“or”会得到更好的效果<h1 id="七、尽量用union-all代替union"><a href="#七、尽量用union-all代替union" class="headerlink" title="七、尽量用union all代替union"></a>七、尽量用union all代替union</h1>union和union all的差异主要是前者需要将结果集合并后再进行唯一性过滤操作，这就会涉及到排序，增加大量的CPU运算，加大资源消耗及延迟。当然，union all的前提条件是两个结果集没有重复数据。<h1 id="八、不使用ORDER-BY-RAND"><a href="#八、不使用ORDER-BY-RAND" class="headerlink" title="八、不使用ORDER BY RAND()"></a>八、不使用ORDER BY RAND()</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> <span class="string">`table_name`</span><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">rand</span>() <span class="keyword">limit</span> <span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>上面的sql语句，可优化为</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> <span class="string">`table_name`</span> t1 <span class="keyword">join</span> (<span class="keyword">select</span> <span class="keyword">rand</span>() * (<span class="keyword">select</span> <span class="keyword">max</span>(<span class="keyword">id</span>) <span class="keyword">from</span> <span class="string">`table_name`</span>) asnid) t2 <span class="keyword">on</span> t1.id &gt; t2.nid <span class="keyword">limit</span> <span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="九、区分in和exists，-not-in和not-exists"><a href="#九、区分in和exists，-not-in和not-exists" class="headerlink" title="九、区分in和exists， not in和not exists"></a>九、区分in和exists， not in和not exists</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> 表A <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> 表B)</span><br></pre></td></tr></table></figure>
+
+<p>上面sql语句相当于</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> 表A <span class="keyword">where</span> <span class="keyword">exists</span>(<span class="keyword">select</span> * <span class="keyword">from</span> 表B <span class="keyword">where</span> 表B.id=表A.id)</span><br></pre></td></tr></table></figure>
+
+<p>区分in和exists主要是造成了驱动顺序的改变（这是性能变化的关键），如果是exists，那么以外层表为驱动表，先被访问，如果是IN，那么先执行子查询。所以IN适合于外表大而内表小的情况；EXISTS适合于外表小而内表大的情况。<br>关于not in和not exists，推荐使用not exists，不仅仅是效率问题，not in可能存在逻辑问题。如何高效的写出一个替代not exists的sql语句？<br>原sql语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> colname … <span class="keyword">from</span> A表 <span class="keyword">where</span> a.id <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> b.id <span class="keyword">from</span> B表)</span><br></pre></td></tr></table></figure>
+
+<p>高效的sql语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> colname … <span class="keyword">from</span> A表 <span class="keyword">Left</span> <span class="keyword">join</span> B表 <span class="keyword">on</span> <span class="keyword">where</span> a.id = b.id <span class="keyword">where</span> b.id <span class="keyword">is</span> <span class="literal">null</span></span><br></pre></td></tr></table></figure>
+
+<p>取出的结果集如下图表示，A表不在B表中的数据<br><img src="https://img-blog.csdnimg.cn/20190604223943337.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="十、使用合理的分页方式以提高分页的效率"><a href="#十、使用合理的分页方式以提高分页的效率" class="headerlink" title="十、使用合理的分页方式以提高分页的效率"></a>十、使用合理的分页方式以提高分页的效率</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> table_name <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span></span><br></pre></td></tr></table></figure>
+
+<p>使用上述sql语句做分页的时候，可能有人会发现，随着表数据量的增加，直接使用limit分页查询会越来越慢。<br>优化的方法如下：可以取前一页的最大行数的id，然后根据这个最大的id来限制下一页的起点。比如此列中，上一页最大的id是866612。sql可以采用如下的写法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> table_name <span class="keyword">where</span> <span class="keyword">id</span>&gt; <span class="number">866612</span> <span class="keyword">limit</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="十一、分段查询"><a href="#十一、分段查询" class="headerlink" title="十一、分段查询"></a>十一、分段查询</h1><p>在一些用户选择页面中，可能一些用户选择的时间范围过大，造成查询缓慢。主要的原因是扫描行数过多。这个时候可以通过程序，分段进行查询，循环遍历，将结果合并处理进行展示。<br>如下图这个sql语句，扫描的行数成百万级以上的时候就可以使用分段查询<br><img src="https://img-blog.csdnimg.cn/20190604224034632.png" alt="在这里插入图片描述"></p>
+<h1 id="十二、避免在-where-子句中对字段进行-null-值判断"><a href="#十二、避免在-where-子句中对字段进行-null-值判断" class="headerlink" title="十二、避免在 where 子句中对字段进行 null 值判断"></a>十二、避免在 where 子句中对字段进行 null 值判断</h1><p>对于null的判断会导致引擎放弃使用索引而进行全表扫描。</p>
+<h1 id="十三、不建议使用-前缀模糊查询"><a href="#十三、不建议使用-前缀模糊查询" class="headerlink" title="十三、不建议使用%前缀模糊查询"></a>十三、不建议使用%前缀模糊查询</h1><p>例如LIKE “%name”或者LIKE “%name%”，这种查询会导致索引失效而进行全表扫描。但是可以使用LIKE “name%”。<br>那如何查询%name%？<br>如下图所示，虽然给secret字段添加了索引，但在explain结果果并没有使用<br><img src="https://img-blog.csdnimg.cn/20190604224122521.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>那么如何解决这个问题呢，答案：使用全文索引<br>在我们查询中经常会用到select id,fnum,fdst from table_name where user_name like ‘%zhangsan%’; 。这样的语句，普通索引是无法满足查询需求的。庆幸的是在MySQL中，有全文索引来帮助我们。<br>创建全文索引的sql语法是：<br>ALTER TABLE <code>table_name</code> ADD FULLTEXT<br>INDEX <code>idx_user_name</code> (<code>user_name</code>);<br>使用全文索引的sql语句是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,fnum,fdst <span class="keyword">from</span> table_name <span class="keyword">where</span> <span class="keyword">match</span>(user_name) against(<span class="string">'zhangsan'</span> <span class="keyword">in</span> booleanmode);</span><br></pre></td></tr></table></figure>
+
+<p>注意：在需要创建全文索引之前，请联系DBA确定能否创建。同时需要注意的是查询语句的写法与普通索引的区别</p>
+<h1 id="十四、避免在where子句中对字段进行表达式操作"><a href="#十四、避免在where子句中对字段进行表达式操作" class="headerlink" title="十四、避免在where子句中对字段进行表达式操作"></a>十四、避免在where子句中对字段进行表达式操作</h1><p>比如</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> table_name <span class="keyword">where</span> age*<span class="number">2</span>=<span class="number">36</span>;</span><br></pre></td></tr></table></figure>
+
+<p>中对字段就行了算术运算，这会造成引擎放弃使用索引，建议改成</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> table_name <span class="keyword">where</span> age=<span class="number">36</span>/<span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="十五、避免隐式类型转换"><a href="#十五、避免隐式类型转换" class="headerlink" title="十五、避免隐式类型转换"></a>十五、避免隐式类型转换</h1><p>where 子句中出现 column 字段的类型和传入的参数类型不一致的时候发生的类型转换，建议先确定where中的参数类型<br><img src="https://img-blog.csdnimg.cn/20190604223432793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="十六、对于联合索引来说，要遵守最左前缀法则"><a href="#十六、对于联合索引来说，要遵守最左前缀法则" class="headerlink" title="十六、对于联合索引来说，要遵守最左前缀法则"></a>十六、对于联合索引来说，要遵守最左前缀法则</h1><p>举列来说索引含有字段id,name,school，可以直接用id字段，也可以id,name这样的顺序，但是name;school都无法使用这个索引。所以在创建联合索引的时候一定要注意索引字段顺序，常用的查询字段放在最前面</p>
+<h1 id="十七、必要时可以使用force-index来强制查询走某个索引"><a href="#十七、必要时可以使用force-index来强制查询走某个索引" class="headerlink" title="十七、必要时可以使用force index来强制查询走某个索引"></a>十七、必要时可以使用force index来强制查询走某个索引</h1><p>有的时候MySQL优化器采取它认为合适的索引来检索sql语句，但是可能它所采用的索引并不是我们想要的。这时就可以采用force index来强制优化器使用我们制定的索引。</p>
+<h1 id="十八、注意范围查询语句"><a href="#十八、注意范围查询语句" class="headerlink" title="十八、注意范围查询语句"></a>十八、注意范围查询语句</h1><p>对于联合索引来说，如果存在范围查询，比如between,&gt;,&lt;等条件时，会造成后面的索引字段失效。</p>
+<h1 id="十九、关于JOIN优化"><a href="#十九、关于JOIN优化" class="headerlink" title="十九、关于JOIN优化"></a>十九、关于JOIN优化</h1><p><img src="https://img-blog.csdnimg.cn/20190604223253534.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>  ● LEFT JOIN A表为驱动表<br>  ● INNER JOIN MySQL会自动找出那个数据少的表作用驱动表<br>  ● RIGHT JOIN B表为驱动表<br>注意：MySQL中没有full join，可以用以下方式来解决<br>select * from A left join B on B.name = A.name<br>where B.name is null<br>union all<br>select * from B;<br>尽量使用inner join，避免left join<br>参与联合查询的表至少为2张表，一般都存在大小之分。如果连接方式是inner join，在没有其他过滤条件的情况下MySQL会自动选择小表作为驱动表，但是left join在驱动表的选择上遵循的是左边驱动右边的原则，即left join左边的表名为驱动表。<br>合理利用索引<br>被驱动表的索引字段作为on的限制字段。<br>利用小表去驱动大表<br><img src="https://img-blog.csdnimg.cn/20190604223211945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>从原理图能够直观的看出如果能够减少驱动表的话，减少嵌套循环中的循环次数，以减少 IO总量及CPU运算的次数。<br>巧用STRAIGHT_JOIN<br>inner join是由mysql选择驱动表，但是有些特殊情况需要选择另个表作为驱动表，比如有group by、order by等「Using filesort」、「Using temporary」时。STRAIGHT_JOIN来强制连接顺序，在STRAIGHT_JOIN左边的表名就是驱动表，右边则是被驱动表。在使用STRAIGHT_JOIN有个前提条件是该查询是内连接，也就是inner join。其他链接不推荐使用STRAIGHT_JOIN，否则可能造成查询结果不准确。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190604223150783.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>这个方式有时可能减少3倍的时间。<br>这里只列举了上述优化方案，当然还有其他的优化方式，大家可以去摸索尝试，感谢关注。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/05/Mysql优化/" data-id="cjwil3pm4001zakuvbd5w8duz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-设计模式是什么" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/05/设计模式是什么/" class="article-date">
+  <time datetime="2019-06-05T01:57:18.000Z" itemprop="datePublished">2019-06-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/05/设计模式是什么/">设计模式是什么</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h5 id="创建型模式"><a href="#创建型模式" class="headerlink" title="创建型模式"></a>创建型模式</h5><p>共五种：工厂方法模式、抽象工厂模式、单例模式、建造者模式、原型模式。</p>
+<h5 id="结构型模式"><a href="#结构型模式" class="headerlink" title="结构型模式"></a>结构型模式</h5><p>共七种：适配器模式、装饰器模式、代理模式、外观模式、桥接模式、组合模式、享元模式。</p>
+<h5 id="行为型模式"><a href="#行为型模式" class="headerlink" title="行为型模式"></a>行为型模式</h5><p>共十一种：策略模式、模板方法模式、观察者模式、迭代子模式、责任链模式、命令模式、备忘录模式、状态模式、访问者模式、中介者模式、解释器模式。</p>
+<p>其实还有两类：并发型模式和线程池模式。</p>
+<h4 id="设计模式的六大原则"><a href="#设计模式的六大原则" class="headerlink" title="设计模式的六大原则"></a>设计模式的六大原则</h4><p>总原则：开闭原则</p>
+<h5 id="1、单一职责原则"><a href="#1、单一职责原则" class="headerlink" title="1、单一职责原则"></a>1、单一职责原则</h5><p>不要存在多于一个导致类变更的原因，也就是说每个类应该实现单一的职责，如若不然，就应该把类拆分。</p>
+<h5 id="2、里氏替换原则（Liskov-Substitution-Principle）"><a href="#2、里氏替换原则（Liskov-Substitution-Principle）" class="headerlink" title="2、里氏替换原则（Liskov Substitution Principle）"></a>2、里氏替换原则（Liskov Substitution Principle）</h5><p>里氏代换原则(Liskov Substitution Principle LSP)面向对象设计的基本原则之一。 里氏代换原则中说，任何基类可以出现的地方，子类一定可以出现。 LSP是继承复用的基石，只有当衍生类可以替换掉基类，软件单位的功能不受到影响时，基类才能真正被复用，而衍生类也能够在基类的基础上增加新的行为。里氏代换原则是对“开-闭”原则的补充。实现“开-闭”原则的关键步骤就是抽象化。而基类与子类的继承关系就是抽象化的具体实现，所以里氏代换原则是对实现抽象化的具体步骤的规范。</p>
+<p>里式替换原则中，子类对父类的方法尽量不要重写和重载。因为父类代表了定义好的结构，通过这个规范的接口与外界交互，子类不应该随便破坏它。</p>
+<h5 id="3、依赖倒转原则（Dependence-Inversion-Principle）"><a href="#3、依赖倒转原则（Dependence-Inversion-Principle）" class="headerlink" title="3、依赖倒转原则（Dependence Inversion Principle）"></a>3、依赖倒转原则（Dependence Inversion Principle）</h5><p>这个是开闭原则的基础，具体内容：面向接口编程，依赖于抽象而不依赖于具体。写代码时用到具体类时，不与具体类交互，而与具体类的上层接口交互。</p>
+<h5 id="4、接口隔离原则（Interface-Segregation-Principle）"><a href="#4、接口隔离原则（Interface-Segregation-Principle）" class="headerlink" title="4、接口隔离原则（Interface Segregation Principle）"></a>4、接口隔离原则（Interface Segregation Principle）</h5><p>这个原则的意思是：每个接口中不存在子类用不到却必须实现的方法，如果不然，就要将接口拆分。使用多个隔离的接口，比使用单个接口（多个接口方法集合到一个的接口）要好。</p>
+<h5 id="5、迪米特法则（最少知道原则）（Demeter-Principle）"><a href="#5、迪米特法则（最少知道原则）（Demeter-Principle）" class="headerlink" title="5、迪米特法则（最少知道原则）（Demeter Principle）"></a>5、迪米特法则（最少知道原则）（Demeter Principle）</h5><p>就是说：一个类对自己依赖的类知道的越少越好。也就是说无论被依赖的类多么复杂，都应该将逻辑封装在方法的内部，通过public方法提供给外部。这样当被依赖的类变化时，才能最小的影响该类。</p>
+<p>最少知道原则的另一个表达方式是：只与直接的朋友通信。类之间只要有耦合关系，就叫朋友关系。耦合分为依赖、关联、聚合、组合等。我们称出现为成员变量、方法参数、方法返回值中的类为直接朋友。局部变量、临时变量则不是直接的朋友。我们要求陌生的类不要作为局部变量出现在类中。</p>
+<h5 id="6、合成复用原则（Composite-Reuse-Principle）"><a href="#6、合成复用原则（Composite-Reuse-Principle）" class="headerlink" title="6、合成复用原则（Composite Reuse Principle）"></a>6、合成复用原则（Composite Reuse Principle）</h5><p>原则是尽量首先使用合成/聚合的方式，而不是使用继承。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/05/设计模式是什么/" data-id="cjwil3plw001kakuvmrs1d6wz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-熔断器Hystrix配置及使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/04/熔断器Hystrix配置及使用/" class="article-date">
@@ -131,7 +271,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/熔断器Hystrix配置及使用/" data-id="cjwhlc95x001fawuvuhjfinxp" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/熔断器Hystrix配置及使用/" data-id="cjwil3plt001dakuvzc472gnt" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
@@ -173,7 +313,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/堆/" data-id="cjwhlc95s0015awuvel84ixc8" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/堆/" data-id="cjwil3plr0019akuv745mwiz3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -245,7 +385,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/红黑树/" data-id="cjwhlc9680020awuvz8ihis8o" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/红黑树/" data-id="cjwil3pm80025akuvkq24bu6z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -287,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/RSA加密使用详解/" data-id="cjwhlc95c000hawuvidj9wlyg" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/RSA加密使用详解/" data-id="cjwil3pl9000dakuvmcq0pgab" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -335,7 +475,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/cron表达式详解/" data-id="cjwhlc95h000oawuvyf57ugru" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/cron表达式详解/" data-id="cjwil3plg000lakuvp925ot8m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -377,7 +517,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/quartz定时任务的使用/" data-id="cjwhlc95n000yawuveybtfquk" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/quartz定时任务的使用/" data-id="cjwil3pln0010akuv9lc0bgqb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -423,7 +563,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Java导出数据到excel/" data-id="cjwhlc959000dawuvarvkkmat" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/Java导出数据到excel/" data-id="cjwil3pl7000cakuvbpescr80" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -470,246 +610,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Guava缓存的使用/" data-id="cjwhlc9550009awuvn0olyifp" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/Guava缓存的使用/" data-id="cjwil3pl00005akuvezq7nz4t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-SQL学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/SQL学习/" class="article-date">
-  <time datetime="2019-06-04T08:26:03.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/SQL学习/">SQL学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>登录mysql命令（mysql的bin目录下输入）</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -hlocalhost -uroot -p</span><br></pre></td></tr></table></figure>
-
-<h1 id="SQL语句"><a href="#SQL语句" class="headerlink" title="SQL语句"></a>SQL语句</h1><h4 id="sql分类"><a href="#sql分类" class="headerlink" title="sql分类"></a>sql分类</h4><h6 id="DDL（Data-Definition-Language，数据定义语言）"><a href="#DDL（Data-Definition-Language，数据定义语言）" class="headerlink" title="DDL（Data Definition Language，数据定义语言）"></a>DDL（Data Definition Language，数据定义语言）</h6><ul>
-<li>CREATE ： 创建数据库和表等对象DROP ： 删除数据库和表等对象</li>
-<li>ALTER ： 修改数据库和表等对象的结构 <h6 id="DML（Data-Manipulation-Language，数据操纵语言）"><a href="#DML（Data-Manipulation-Language，数据操纵语言）" class="headerlink" title="DML（Data Manipulation Language，数据操纵语言）"></a>DML（Data Manipulation Language，数据操纵语言）</h6></li>
-<li>SELECT ：查询表中的数据</li>
-<li>INSERT ：向表中插入新数据</li>
-<li>UPDATE ：更新表中的数据</li>
-<li>DELETE ：删除表中的数据 <h6 id="DCL（Data-Control-Language，数据控制语言）"><a href="#DCL（Data-Control-Language，数据控制语言）" class="headerlink" title="DCL（Data Control Language，数据控制语言）"></a>DCL（Data Control Language，数据控制语言）</h6></li>
-<li>COMMIT ： 确认对数据库中的数据进行的变更</li>
-<li>ROLLBACK ： 取消对数据库中的数据进行的变更</li>
-<li>GRANT ： 赋予用户操作权限</li>
-<li>REVOKE ： 取消用户的操作权限</li>
-</ul>
-<h4 id="建库语句"><a href="#建库语句" class="headerlink" title="建库语句"></a>建库语句</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> 库名;</span><br></pre></td></tr></table></figure>
-
-<h4 id="建表语句"><a href="#建表语句" class="headerlink" title="建表语句"></a>建表语句</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Product</span><br><span class="line">(product_id <span class="built_in">CHAR</span>(<span class="number">4</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">product_name <span class="built_in">VARCHAR</span>(<span class="number">100</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">product_type <span class="built_in">VARCHAR</span>(<span class="number">32</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">sale_price <span class="built_in">INTEGER</span> ,</span><br><span class="line">purchase_price <span class="built_in">INTEGER</span> ,</span><br><span class="line">regist_date <span class="built_in">DATE</span> ,</span><br><span class="line">PRIMARY <span class="keyword">KEY</span> (product_id));</span><br></pre></td></tr></table></figure>
-
-<h4 id="查询去重-DISTINCT"><a href="#查询去重-DISTINCT" class="headerlink" title="查询去重 DISTINCT"></a>查询去重 DISTINCT</h4><p>只能用在第一个列名之前。不能写成 regist _ date , DISTINCT product _ type </p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> product_type, regist_date <span class="keyword">FROM</span> Product;</span><br></pre></td></tr></table></figure>
-
-<h4 id="关联查询"><a href="#关联查询" class="headerlink" title="关联查询"></a>关联查询</h4><p>inner join on：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tch_teacher <span class="keyword">inner</span> <span class="keyword">join</span> tch_contact <span class="keyword">on</span> tch_teacher.Id = tch_contact.TId;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tch_teacher,tch_contact</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tch_teacher <span class="keyword">join</span> tch_contact</span><br></pre></td></tr></table></figure>
-
-<p>right/left join on:</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tch_teacher <span class="keyword">right</span>/<span class="keyword">left</span> <span class="keyword">join</span> tch_contact <span class="keyword">on</span> tch_teacher.Id = tch_contact.TId;</span><br></pre></td></tr></table></figure>
-
-<h4 id="排序查询"><a href="#排序查询" class="headerlink" title="排序查询"></a>排序查询</h4><p>order by</p>
-<ol>
-<li>ASC：默认，不写也是ASC：按照升序的方式排列;</li>
-<li>DESC：按照降序的方式排列；<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> emp <span class="keyword">ORDER</span> <span class="keyword">BY</span> sal <span class="keyword">DESC</span>;//降序</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> emp <span class="keyword">ORDER</span> <span class="keyword">BY</span> sal <span class="keyword">ASC</span>;//升序</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> emp <span class="keyword">ORDER</span> <span class="keyword">BY</span> sal;//升序</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h4 id="分组查询"><a href="#分组查询" class="headerlink" title="分组查询"></a>分组查询</h4><p>HAVING核心：是对分组统计之后的结果集，进行数据的筛选</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span>  GradeId,sex,<span class="keyword">COUNT</span>(*)  <span class="keyword">as</span> renshu <span class="keyword">from</span> student  <span class="keyword">group</span> <span class="keyword">by</span> GradeId,Sex  <span class="keyword">having</span> <span class="keyword">count</span>(*)&gt;=<span class="number">3</span> <span class="keyword">order</span> <span class="keyword">by</span> GradeId</span><br></pre></td></tr></table></figure>
-
-<h4 id="逻辑关键字"><a href="#逻辑关键字" class="headerlink" title="逻辑关键字"></a>逻辑关键字</h4><p><img src="https://img-blog.csdnimg.cn/20190307103049554.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzMwNDY4NTUx,size_16,color_FFFFFF,t_70" alt="image"></p>
-<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><p>sum<br>count<br>avg<br>max<br>min</p>
-<h5 id="where-与-having："><a href="#where-与-having：" class="headerlink" title="where 与 having："></a>where 与 having：</h5><p>where 与 having关键字都用于设置条件表达式对查询结果进行过滤，区别是<strong>having后面可以跟聚合函数</strong>，而where不能，通常having关键字都与group by 一起使用，表示对分组后的数据进行过滤</p>
-<h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><h6 id="MyIASM"><a href="#MyIASM" class="headerlink" title="MyIASM"></a>MyIASM</h6><p>支持全文检索，查询效率比较高，<br>不支持事务，表级锁</p>
-<h6 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h6><p>支持事务，外键，支持行级锁提高并发效率，自动加排它锁</p>
-<h6 id="TokuDB"><a href="#TokuDB" class="headerlink" title="TokuDB"></a>TokuDB</h6><p>写速度快，支持数据压缩存储，可以在线添加索引不影响读写操作，不适合大量读写操作</p>
-<h1 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h1><h6 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h6><p>开销小，加锁快，不会出现死锁，锁定力度大，锁冲突概率高，并发访问效率比较低</p>
-<h6 id="行级锁"><a href="#行级锁" class="headerlink" title="行级锁"></a>行级锁</h6><p>开销大，加锁慢，会出现死锁，锁定力度小，锁的冲突概率低，并发访问效率比较高</p>
-<h6 id="共享锁"><a href="#共享锁" class="headerlink" title="共享锁"></a>共享锁</h6><p>读锁，其他事物可以读，不能写</p>
-<h6 id="排它锁"><a href="#排它锁" class="headerlink" title="排它锁"></a>排它锁</h6><p>写锁，其他事物不能读取也不能写，</p>
-<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><ul>
-<li>UNIQUE(唯一索引)：<br>不可以出现相同的值，可以有NULL值</li>
-<li>INDEX(普通索引)：允许出现相同的索引内容</li>
-<li>PROMARY KEY(主键索引)：不允许出现相同的值</li>
-<li>fulltext index(全文索引)：可以针对值中的某个单词，但效率确实不敢恭维</li>
-<li>组合索引：实质上是将多个字段建到一个索引里，列值的组合必须唯一</li>
-</ul>
-<h6 id="添加索引"><a href="#添加索引" class="headerlink" title="添加索引"></a>添加索引</h6><p>ALTER TABLE 表名 ADD 索引类型 （unique,primary key,fulltext,index）[索引名]（字段名）<br>如：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">add</span> <span class="keyword">index</span> index_name (column_list) ;</span><br></pre></td></tr></table></figure>
-
-<h6 id="组合索引"><a href="#组合索引" class="headerlink" title="组合索引"></a>组合索引</h6><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> USER_DEMO <span class="keyword">ADD</span> <span class="keyword">INDEX</span> name_city_age (LOGIN_NAME(<span class="number">16</span>),CITY,AGE);</span><br></pre></td></tr></table></figure>
-
-<h6 id="建表时增加索引"><a href="#建表时增加索引" class="headerlink" title="建表时增加索引"></a>建表时增加索引</h6><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> index_name <span class="keyword">ON</span> table_name(username(<span class="keyword">length</span>));</span><br></pre></td></tr></table></figure>
-
-<h6 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h6><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">index</span> index_name <span class="keyword">on</span> table_name ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">drop</span> <span class="keyword">index</span> index_name ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">drop</span> primary <span class="keyword">key</span> ;</span><br></pre></td></tr></table></figure>
-
-<h5 id="索引的缺点"><a href="#索引的缺点" class="headerlink" title="索引的缺点"></a>索引的缺点</h5><ul>
-<li>虽然索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT,UPDATE和DELETE。因为更新表时，mysql不仅要保存数据，还要保存一下索引文件</li>
-<li>建立索引会占用磁盘空间的索引文件。一般情况这个问题不太严重，但如果你在要给大表上建了多种组合索引，索引文件会膨胀很宽</li>
-</ul>
-<h5 id="使用索引的技巧"><a href="#使用索引的技巧" class="headerlink" title="使用索引的技巧"></a>使用索引的技巧</h5><ol>
-<li><p>索引不会包含有NULL的列</p>
-<pre><code>只要列中包含有NULL值，都将不会被包含在索引中，复合索引中只要有一列含有NULL值，那么这一列对于此复合索引就是无效的。</code></pre></li>
-<li><p>使用短索引</p>
-<pre><code>对串列进行索引，如果可以就应该指定一个前缀长度。例如，如果有一个char（255）的列，如果在前10个或20个字符内，多数值是唯一的，那么就不要对整个列进行索引。短索引不仅可以提高查询速度而且可以节省磁盘空间和I/O操作。</code></pre></li>
-<li><p>索引列排序</p>
-<pre><code>mysql查询只使用一个索引，因此如果where子句中已经使用了索引的话，那么order by中的列是不会使用索引的。因此数据库默认排序可以符合要求的情况下不要使用排序操作，尽量不要包含多个列的排序，如果需要最好给这些列建复合索引。</code></pre></li>
-<li><p>like语句操作</p>
-<p>   一般情况下不鼓励使用like操作，如果非使用不可，注意正确的使用方式。like ‘%aaa%’不会使用索引，而like ‘aaa%’可以使用索引。</p>
-</li>
-<li><p>不要在列上进行运算</p>
-</li>
-<li><p>不使用NOT IN 、&lt;&gt;、！=操作，但&lt;,&lt;=，=，&gt;,&gt;=,BETWEEN,IN是可以用到索引的</p>
-</li>
-<li><p>索引要建立在经常进行select操作的字段上。</p>
-<pre><code>这是因为，如果这些列很少用到，那么有无索引并不能明显改变查询速度。相反，由于增加了索引，反而降低了系统的维护速度和增大了空间需求。</code></pre></li>
-<li><p>索引要建立在值比较唯一的字段上。</p>
-</li>
-<li><p>对于那些定义为text、image和bit数据类型的列不应该增加索引。因为这些列的数据量要么相当大，要么取值很少。</p>
-</li>
-<li><p>在where和join中出现的列需要建立索引。</p>
-</li>
-<li><p>where的查询条件里有不等号(where column != …),mysql将无法使用索引。</p>
-</li>
-<li><p>如果where字句的查询条件里使用了函数(如：where DAY(column)=…),mysql将无法使用索引。</p>
-</li>
-<li><p>在join操作中(需要从多个数据表提取数据时)，mysql只有在主键和外键的数据类型相同时才能使用索引，否则及时建立了索引也不会使用。</p>
-</li>
-</ol>
-<h4 id="索引实现"><a href="#索引实现" class="headerlink" title="索引实现"></a>索引实现</h4><ol>
-<li>FULLTEXT</li>
-</ol>
-<p>即为全文索引，目前只有MyISAM引擎支持。其可以在CREATE TABLE ，ALTER TABLE ，CREATE INDEX 使用，不过目前只有 CHAR、VARCHAR ，TEXT 列上可以创建全文索引。</p>
-<p>全文索引并不是和MyISAM一起诞生的，它的出现是为了解决WHERE name LIKE “%word%”这类针对文本的模糊查询效率较低的问题。</p>
-<ol start="2">
-<li>HASH</li>
-</ol>
-<p>由于HASH的唯一（几乎100%的唯一）及类似键值对的形式，很适合作为索引。</p>
-<p>HASH索引可以一次定位，不需要像树形索引那样逐层查找,因此具有极高的效率。但是，这种高效是有条件的，即只在“=”和“in”条件下高效，对于范围查询、排序及组合索引仍然效率不高。</p>
-<ol start="3">
-<li>BTREE</li>
-</ol>
-<p>BTREE索引就是一种将索引值按一定的算法，存入一个树形的数据结构中（二叉树），每次查询都是从树的入口root开始，依次遍历node，获取leaf。这是MySQL里默认和最常用的索引类型。</p>
-<ol start="4">
-<li>RTREE</li>
-</ol>
-<p>RTREE在MySQL很少使用，仅支持geometry数据类型，支持该类型的存储引擎只有MyISAM、BDb、InnoDb、NDb、Archive几种。</p>
-<h1 id="sql优化"><a href="#sql优化" class="headerlink" title="sql优化"></a>sql优化</h1><h6 id="表结构和索引优化"><a href="#表结构和索引优化" class="headerlink" title="表结构和索引优化"></a>表结构和索引优化</h6><ul>
-<li>分库分表，读写分离</li>
-<li>为字段选择合适的数据类型</li>
-<li>将字段多的表分解成多个表，增加中间表</li>
-<li>混用范式与反范式，适当冗余</li>
-<li>为查询创建必要索引，但避免滥用</li>
-<li>尽可能的使⽤用 NOT NULL<h6 id="sql语句优化"><a href="#sql语句优化" class="headerlink" title="sql语句优化"></a>sql语句优化</h6></li>
-<li>寻找最需要优化的语句句：分析慢查询日志</li>
-<li>利用分析工具：explain、profile</li>
-<li>避免使用SELECT *，只取需要的列列</li>
-<li>尽量量使用prepared statements</li>
-<li>使⽤用索引扫描来排序</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/SQL学习/" data-id="cjwhlc966001wawuv0q6cxq7t" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring-boot发送邮件mail" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/spring-boot发送邮件mail/" class="article-date">
-  <time datetime="2019-06-04T08:25:21.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/spring-boot发送邮件mail/">spring boot发送邮件mail</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>创建spring boot项目，添加邮件的依赖</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-mail<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>application.properties中新增配置</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># 设置邮箱主机</span><br><span class="line">spring.mail.host=smtp.163.com</span><br><span class="line"># qq邮箱的host</span><br><span class="line">#spring.mail.host=smtp.qq.com</span><br><span class="line"> </span><br><span class="line"># 设置用户名</span><br><span class="line">spring.mail.username=你的邮箱地址</span><br><span class="line"> </span><br><span class="line"># 设置密码，该处的密码是QQ邮箱开启SMTP的授权码而非QQ密码，登录qq邮箱，进入设置开启，得到授权码</span><br><span class="line"># 163邮箱就是邮箱密码</span><br><span class="line">spring.mail.password=你的邮箱密码</span><br><span class="line"></span><br><span class="line"># 设置编码集</span><br><span class="line">spring.mail.<span class="keyword">default</span>-encoding=UTF-<span class="number">8</span></span><br><span class="line"> </span><br><span class="line"># 设置是否需要认证，如果为true,那么用户名和密码就必须的，</span><br><span class="line"># 如果设置false，可以不设置用户名和密码，当然也得看你的对接的平台是否支持无密码进行访问的。</span><br><span class="line">spring.mail.properties.mail.smtp.auth=<span class="keyword">true</span></span><br><span class="line"> </span><br><span class="line"># STARTTLS[1]  是对纯文本通信协议的扩展。它提供一种方式将纯文本连接升级为加密连接（TLS或SSL），而不是另外使用一个端口作加密通信。</span><br><span class="line">spring.mail.properties.mail.smtp.starttls.enable=<span class="keyword">true</span></span><br><span class="line">spring.mail.properties.mail.smtp.starttls.required=<span class="keyword">true</span></span><br><span class="line"> </span><br><span class="line"># 以谁来发送邮件	</span><br><span class="line">mail.fromMail=发送方邮件地址</span><br><span class="line"># 发送给谁</span><br><span class="line">mail.tomail=接收方邮件地址</span><br></pre></td></tr></table></figure>
-
-<h4 id="一、发送简单的邮件"><a href="#一、发送简单的邮件" class="headerlink" title="一、发送简单的邮件"></a>一、发送简单的邮件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> JavaMailSender mailSender;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendSimpleMail</span><span class="params">(String to, String subject, String content)</span> </span>&#123;</span><br><span class="line">	SimpleMailMessage simpleMailMessage = <span class="keyword">new</span> SimpleMailMessage();</span><br><span class="line">	simpleMailMessage.setSubject(subject);</span><br><span class="line">	simpleMailMessage.setTo(to);</span><br><span class="line">	simpleMailMessage.setText(content);</span><br><span class="line">	simpleMailMessage.setFrom(mailFrom);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		mailSender.send(simpleMailMessage);</span><br><span class="line">		System.out.println(<span class="string">"发送成功"</span>);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">		System.out.println(<span class="string">"发送失败"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试一下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSendSimpleMail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	mailserviceImpl.sendSimpleMail(toMail, <span class="string">"测试一下简单的邮件发送"</span>, <span class="string">"简单的邮件发送成功"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="二、发送带附件的邮件"><a href="#二、发送带附件的邮件" class="headerlink" title="二、发送带附件的邮件"></a>二、发送带附件的邮件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> JavaMailSender mailSender;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendAttachmentsMail</span><span class="params">(String to, String subject, String content, String filePath)</span> </span>&#123;</span><br><span class="line">	MimeMessage message = mailSender.createMimeMessage();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		MimeMessageHelper helper = <span class="keyword">new</span> MimeMessageHelper(message, <span class="keyword">true</span>);</span><br><span class="line">		helper.setFrom(mailFrom);</span><br><span class="line">		helper.setTo(to);</span><br><span class="line">		helper.setSubject(subject);</span><br><span class="line">		helper.setText(content, <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">		FileSystemResource file = <span class="keyword">new</span> FileSystemResource(<span class="keyword">new</span> File(filePath));</span><br><span class="line">		String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + <span class="number">1</span>);</span><br><span class="line">		helper.addAttachment(fileName, file);</span><br><span class="line"></span><br><span class="line">		mailSender.send(message);</span><br><span class="line">		System.out.println(<span class="string">"发送成功"</span>);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (MessagingException e) &#123;</span><br><span class="line">		System.out.println(<span class="string">"发生异常"</span>);</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试一下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSendAttachmentsMail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String filePath = <span class="string">"文件路径"</span>;</span><br><span class="line">	mailserviceImpl.sendAttachmentsMail(toMail, <span class="string">"附件邮件发送"</span>, <span class="string">"附件邮件发送成功，见附件"</span>, filePath);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>报错554 DT:SPM 163</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.mail.MailSendException: Failed messages: com.sun.mail.smtp.SMTPSendFailedException: 554 DT:SPM 163</span><br></pre></td></tr></table></figure>
-
-<p>原因是我把helper的setText方法设置成了HTML格式，所以格式不正确，把第二个参数true去掉即可</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helper.setText(content, <span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
-
-<p>还有可能是因为邮件内容或标题是测试<br>其他报错信息请看本文最后</p>
-<h4 id="三、发送Html内容的邮件"><a href="#三、发送Html内容的邮件" class="headerlink" title="三、发送Html内容的邮件"></a>三、发送Html内容的邮件</h4><p>和第二个附件的邮件的区别就是</p>
-<ul>
-<li>test的参数需要设置为true<code>helper.setText(content, true);</code></li>
-<li>附件发送的时候设置了<code>helper.addAttachment(fileName, file);</code><br>  Html发送的时候不需要设置这个</li>
-<li>setContent的时候，内容必须要是html格式的，不然会报错554 DT:SPM</li>
-</ul>
-<h5 id="163邮箱退邮件说明"><a href="#163邮箱退邮件说明" class="headerlink" title="163邮箱退邮件说明"></a>163邮箱退邮件说明</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">•421 HL:REP 该IP发送行为异常，存在接收者大量不存在情况，被临时禁止连接。请检查是否有用户发送病毒或者垃圾邮件，并核对发送列表有效性；</span><br><span class="line">•421 HL:ICC 该IP同时并发连接数过大，超过了网易的限制，被临时禁止连接。请检查是否有用户发送病毒或者垃圾邮件，并降低IP并发连接数量；</span><br><span class="line">•421 HL:IFC 该IP短期内发送了大量信件，超过了网易的限制，被临时禁止连接。请检查是否有用户发送病毒或者垃圾邮件，并降低发送频率；</span><br><span class="line">•421 HL:MEP 该IP发送行为异常，存在大量伪造发送域域名行为，被临时禁止连接。请检查是否有用户发送病毒或者垃圾邮件，并使用真实有效的域名发送；</span><br><span class="line">•450 MI:CEL 发送方出现过多的错误指令。请检查发信程序；</span><br><span class="line">•450 MI:DMC 当前连接发送的邮件数量超出限制。请减少每次连接中投递的邮件数量；</span><br><span class="line">•450 MI:CCL 发送方发送超出正常的指令数量。请检查发信程序；</span><br><span class="line">•450 RP:DRC 当前连接发送的收件人数量超出限制。请控制每次连接投递的邮件数量；</span><br><span class="line">•450 RP:CCL 发送方发送超出正常的指令数量。请检查发信程序；</span><br><span class="line">•450 DT:RBL 发信IP位于一个或多个RBL里。请参考http://www.rbls.org/关于RBL的相关信息；</span><br><span class="line">•450 WM:BLI 该IP不在网易允许的发送地址列表里；</span><br><span class="line">•450 WM:BLU 此用户不在网易允许的发信用户列表里；</span><br><span class="line">•451 DT:SPM ,please try again 邮件正文带有垃圾邮件特征或发送环境缺乏规范性，被临时拒收。请保持邮件队列，两分钟后重投邮件。需调整邮件内容或优化发送环境；</span><br><span class="line">•451 Requested mail action not taken: too much fail authentication 登录失败次数过多，被临时禁止登录。请检查密码与帐号验证设置；</span><br><span class="line">•451 RP:CEL 发送方出现过多的错误指令。请检查发信程序；</span><br><span class="line">•451 MI:DMC 当前连接发送的邮件数量超出限制。请控制每次连接中投递的邮件数量；</span><br><span class="line">•451 MI:SFQ 发信人在15分钟内的发信数量超过限制，请控制发信频率；</span><br><span class="line">•451 RP:QRC 发信方短期内累计的收件人数量超过限制，该发件人被临时禁止发信。请降低该用户发信频率；</span><br><span class="line">•451 Requested action aborted: local error in processing 系统暂时出现故障，请稍后再次尝试发送；</span><br><span class="line">•500 Error: bad syntaxU 发送的smtp命令语法有误；</span><br><span class="line">•550 MI:NHD HELO命令不允许为空；</span><br><span class="line">•550 MI:IMF 发信人电子邮件地址不合规范。请参考http://www.rfc-editor.org/关于电子邮件规范的定义；</span><br><span class="line">•550 MI:SPF 发信IP未被发送域的SPF许可。请参考http://www.openspf.org/关于SPF规范的定义；</span><br><span class="line">•550 MI:DMA 该邮件未被发信域的DMARC许可。请参考http://dmarc.org/关于DMARC规范的定义；</span><br><span class="line">•550 MI:STC 发件人当天的连接数量超出了限定数量，当天不再接受该发件人的邮件。请控制连接次数；</span><br><span class="line">•550 RP:FRL 网易邮箱不开放匿名转发（Open relay）；</span><br><span class="line">•550 RP:RCL 群发收件人数量超过了限额，请减少每封邮件的收件人数量；</span><br><span class="line">•550 RP:TRC 发件人当天内累计的收件人数量超过限制，当天不再接受该发件人的邮件。请降低该用户发信频率；</span><br><span class="line">•550 DT:SPM 邮件正文带有很多垃圾邮件特征或发送环境缺乏规范性。需调整邮件内容或优化发送环境；</span><br><span class="line">•550 Invalid User 请求的用户不存在；</span><br><span class="line">•550 User in blacklist 该用户不被允许给网易用户发信；</span><br><span class="line">•550 User suspended 请求的用户处于禁用或者冻结状态；</span><br><span class="line">•550 Requested mail action not taken: too much recipient  群发数量超过了限额；</span><br><span class="line">•552 Illegal Attachment 不允许发送该类型的附件，包括以.uu .pif .scr .mim .hqx .bhx .cmd .vbs .bat .com .vbe .vb .js .wsh等结尾的附件；</span><br><span class="line">•552 Requested mail action aborted: exceeded mailsize limit 发送的信件大小超过了网易邮箱允许接收的最大限制；</span><br><span class="line">•553 Requested action not taken: NULL sender is not allowed 不允许发件人为空，请使用真实发件人发送；</span><br><span class="line">•553 Requested action not taken: Local user only  SMTP类型的机器只允许发信人是本站用户；</span><br><span class="line">•553 Requested action not taken: no smtp MX only  MX类型的机器不允许发信人是本站用户；</span><br><span class="line">•553 authentication is required  SMTP需要身份验证，请检查客户端设置；</span><br><span class="line">•554 DT:SPM 发送的邮件内容包含了未被许可的信息，或被系统识别为垃圾邮件。请检查是否有用户发送病毒或者垃圾邮件；</span><br><span class="line">•554 DT:SUM 信封发件人和信头发件人不匹配；</span><br><span class="line">•554 IP is rejected, smtp auth error limit exceed 该IP验证失败次数过多，被临时禁止连接。请检查验证信息设置；</span><br><span class="line">•554 HL:IHU 发信IP因发送垃圾邮件或存在异常的连接行为，被暂时挂起。请检测发信IP在历史上的发信情况和发信程序是否存在异常；</span><br><span class="line">•554 HL:IPB 该IP不在网易允许的发送地址列表里；</span><br><span class="line">•554 MI:STC 发件人当天内累计邮件数量超过限制，当天不再接受该发件人的投信。请降低发信频率；</span><br><span class="line">•554 MI:SPB 此用户不在网易允许的发信用户列表里；</span><br><span class="line">•554 IP in blacklist 该IP不在网易允许的发送地址列表里。</span><br></pre></td></tr></table></figure>
-
-<p>参考：<br><a href="https://blog.csdn.net/caychen/article/details/82887926" target="_blank" rel="noopener">https://blog.csdn.net/caychen/article/details/82887926</a><br><a href="http://www.ityouknow.com/springboot/2017/05/06/spring-boot-mail.html" target="_blank" rel="noopener">http://www.ityouknow.com/springboot/2017/05/06/spring-boot-mail.html</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/spring-boot发送邮件mail/" data-id="cjwhlc967001yawuvcey0zrfi" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
 
     </footer>
   </div>
@@ -736,7 +640,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/groovy/">groovy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nexus/">nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/groovy/">groovy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nexus/">nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
     </div>
   </div>
 
@@ -746,7 +650,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 14px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
     </div>
   </div>
 
@@ -768,6 +672,14 @@
       <ul>
         
           <li>
+            <a href="/2019/06/05/Mysql优化/">Mysql优化</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/05/设计模式是什么/">设计模式是什么</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
           </li>
         
@@ -777,14 +689,6 @@
         
           <li>
             <a href="/2019/06/04/红黑树/">红黑树</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/RSA加密使用详解/">RSA加密使用详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
           </li>
         
       </ul>

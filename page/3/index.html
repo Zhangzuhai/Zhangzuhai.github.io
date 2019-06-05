@@ -62,6 +62,140 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-nexus如何上传自己的依赖包" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/nexus如何上传自己的依赖包/" class="article-date">
+  <time datetime="2019-06-04T08:22:33.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/nexus如何上传自己的依赖包/">nexus如何上传自己的依赖包</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、创建第三方包仓库"><a href="#一、创建第三方包仓库" class="headerlink" title="一、创建第三方包仓库"></a>一、创建第三方包仓库</h3><ol>
+<li>创建第三方jar包的仓库<img src="https://img-blog.csdnimg.cn/20190514215709589.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="待完成"></li>
+<li>选用hosted<br><img src="https://img-blog.csdnimg.cn/2019051421573665.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>取名为nexus-3rd<br><img src="https://img-blog.csdnimg.cn/20190514215912568.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>然后再public组中加入nexus-3rd，交给public管理<br><img src="https://img-blog.csdnimg.cn/2019051422003690.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h3 id="二、创建用户"><a href="#二、创建用户" class="headerlink" title="二、创建用户"></a>二、创建用户</h3>仓库创建完成以后可以创建一个管理的用户third：third123<br><img src="https://img-blog.csdnimg.cn/20190514221119784.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h3 id="三、上传jar包"><a href="#三、上传jar包" class="headerlink" title="三、上传jar包"></a>三、上传jar包</h3><h4 id="1-使用网页上传"><a href="#1-使用网页上传" class="headerlink" title="1.使用网页上传"></a>1.使用网页上传</h4></li>
+<li>点击upload，选择三方库<br><img src="https://img-blog.csdnimg.cn/20190514230823991.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>输入对应的数据，完成上传<br><img src="https://img-blog.csdnimg.cn/2019051423095435.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h4 id="2-使用cmd命令上传jar包"><a href="#2-使用cmd命令上传jar包" class="headerlink" title="2.使用cmd命令上传jar包"></a>2.使用cmd命令上传jar包</h4>在maven的setting文件中新增配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;server&gt;</span><br><span class="line">  &lt;id&gt;deploymentRepo&lt;/id&gt;</span><br><span class="line">  &lt;username&gt;third&lt;/username&gt;</span><br><span class="line">  &lt;password&gt;third123&lt;/password&gt;</span><br><span class="line">&lt;/server&gt;</span><br></pre></td></tr></table></figure>
+
+<p>cmd使用命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn deploy:deploy-file -DgroupId=com.zzuhai -DartifactId=myeureka -Dversion=0.0.2 -Dpackaging=jar -Dfile=F:\Idea_project\myeureka\target\myeureka-0.0.1-SNAPSHOT.jar -Durl=http://45.76.195.63:8081/repository/nexus-3rd/ -DrepositoryId=deploymentRepo</span><br></pre></td></tr></table></figure>
+
+<p>使用的时候需要修改对应的数据<br>上传成功<br><img src="https://img-blog.csdnimg.cn/20190514232940533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="结果展示"><a href="#结果展示" class="headerlink" title="结果展示"></a>结果展示</h4><p>两个jar包都上传成功，可以使用<br><img src="https://img-blog.csdnimg.cn/201905142305441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>程序中可以把依赖jar包拿下来<br><img src="https://img-blog.csdnimg.cn/20190514232315127.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/nexus如何上传自己的依赖包/" data-id="cjwil3plk000sakuvw105h1qs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nexus/">nexus</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-搭建maven私库nexus" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/搭建maven私库nexus/" class="article-date">
+  <time datetime="2019-06-04T08:22:03.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/搭建maven私库nexus/">搭建maven私库nexus</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>必须要在jdk环境下才能搭建</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="一、使用docker来安装"><a href="#一、使用docker来安装" class="headerlink" title="一、使用docker来安装"></a>一、使用docker来安装</h2><ol>
+<li><p>查找nexus镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search nexus</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取latest镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull sonatype/nexus3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建并在后台启动nexus</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8081:8081 --name nexus sonatype/nexus3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以看一下是否启动</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>测试是否能连接</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -u admin:admin123 http://localhost:8081/service/metrics/ping</span><br></pre></td></tr></table></figure>
+
+<p>启动的时候有可能会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cannot set property TasksAccounting, or unknown property.</span><br></pre></td></tr></table></figure>
+
+<p>主要是centos系统版本兼容性问题，用以下命令升级</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update</span><br></pre></td></tr></table></figure>
+
+<p>之后再执行第三步<br>安装完毕</p>
+<h2 id="二、使用压缩包来安装"><a href="#二、使用压缩包来安装" class="headerlink" title="二、使用压缩包来安装"></a>二、使用压缩包来安装</h2><p>待完成</p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><ol>
+<li>首先访问<br><a href="http://45.76.195.63:8081，进入主页![在这里插入图片描述](https://img-blog.csdnimg.cn/20190514211724106.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70)" target="_blank" rel="noopener">http://45.76.195.63:8081，进入主页![在这里插入图片描述](https://img-blog.csdnimg.cn/20190514211724106.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70)</a></li>
+<li>然后登陆，默认的账号密码是admin：admin123<br>点击创建仓库<br><img src="https://img-blog.csdnimg.cn/20190514211850705.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>这三个都要创建<img src="https://img-blog.csdnimg.cn/20190514211923418.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>先来一个proxy<br><img src="https://img-blog.csdnimg.cn/20190514212054451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>再来一个hosted<br><img src="https://img-blog.csdnimg.cn/20190514212452524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>再来一个hosted<br><img src="https://img-blog.csdnimg.cn/2019051421251473.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>最后来一个group<br><img src="https://img-blog.csdnimg.cn/20190514212615607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>最后在maven的setting中配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;  </span><br><span class="line">    &lt;id&gt;nexus&lt;/id&gt;  </span><br><span class="line">    &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;  </span><br><span class="line">    &lt;url&gt;http://45.76.195.63:8081/repository/nexus-public/&lt;/url&gt;  </span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20190514212831723.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM1NzU3NDg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>之后就能够在maven程序中使用阿里云的依赖包了，并且可以使用自己上传的依赖包</p>
+<p>想知道怎么上传jar包到私库请看<a href="https://blog.csdn.net/sinat_35757488/article/details/90216045" target="_blank" rel="noopener">nexus如何上传自己的依赖包</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://zzuhai.github.io/2019/06/04/搭建maven私库nexus/" data-id="cjwil3plq0017akuvvrm0yvc8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nexus/">nexus</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-没有bug的二分查找" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/04/没有bug的二分查找/" class="article-date">
@@ -89,7 +223,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/没有bug的二分查找/" data-id="cjwhlc95w001dawuv5y7rdx2y" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/没有bug的二分查找/" data-id="cjwil3pls001bakuvcpgnaclq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -168,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/docker/" data-id="cjwhlc95g000mawuve8vq9eic" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/docker/" data-id="cjwil3plh000nakuvmemzih2i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -222,7 +356,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/通过RestTemplate的负载均衡配置和eureka注册中心来实现服务间默认规则调用/" data-id="cjwhlc95y001hawuv6ygupo8t" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/通过RestTemplate的负载均衡配置和eureka注册中心来实现服务间默认规则调用/" data-id="cjwil3plv001hakuvmqyaxhqu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
@@ -271,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Eureka注册中心如何开启认证/" data-id="cjwhlc956000aawuv40w748zj" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/Eureka注册中心如何开启认证/" data-id="cjwil3pkz0004akuvwey3py9g" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
@@ -310,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Spring Cloud Eureka 服务上下线监控/" data-id="cjwhlc95e000jawuv4xcs250k" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/Spring Cloud Eureka 服务上下线监控/" data-id="cjwil3ple000iakuvp9cexp9w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li></ul>
@@ -419,7 +553,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/JVM内存分配与回收/" data-id="cjwhlc965001vawuvywv2xwmn" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/JVM内存分配与回收/" data-id="cjwil3pm3001yakuvjzyzt1gs" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
@@ -484,7 +618,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/RabbitMQ安装和配置/" data-id="cjwhlc95a000eawuv5go1rkkp" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/RabbitMQ安装和配置/" data-id="cjwil3plc000gakuvqidqcd6u" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MQ/">MQ</a></li></ul>
@@ -654,85 +788,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/Java多线程一篇就够了/" data-id="cjwhlc96g0024awuv8syb0od9" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-3DES-CBC-PKCS-7Padding加密解密" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/" class="article-date">
-  <time datetime="2019-06-04T06:44:05.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/">3DES/CBC/PKCS/7Padding加密解密</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>加密解密方法如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 加密.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key  key</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 数据</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 加密后字符串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">des3EncodeECB</span><span class="params">(String key, String data, String token)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] ivs = hex2byte(token);</span><br><span class="line">    <span class="keyword">byte</span>[] keyBytes = hex2byte(key);</span><br><span class="line">    <span class="keyword">byte</span>[] iv2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">8</span>;i++) &#123;</span><br><span class="line">        iv2[i] = ivs[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Key deskey = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// 初始化</span></span><br><span class="line">        Security.addProvider(<span class="keyword">new</span> BouncyCastleProvider());</span><br><span class="line">        <span class="comment">// 转化成JAVA的密钥格式</span></span><br><span class="line">        deskey = <span class="keyword">new</span> SecretKeySpec(keyBytes, <span class="string">"desede"</span>);</span><br><span class="line">        Cipher cipher = Cipher.getInstance(<span class="string">"desede/CBC/PKCS7Padding"</span>);</span><br><span class="line">        cipher.init(Cipher.ENCRYPT_MODE, deskey, <span class="keyword">new</span> IvParameterSpec(iv2));</span><br><span class="line">        <span class="keyword">byte</span>[] bOut = cipher.doFinal(data.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">        <span class="keyword">return</span> Base64.getEncoder().encodeToString(bOut);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        System.out.println(e.toString());</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 3DES解密</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key    加密密钥，长度为24字节</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> desStr 解密后的字符串</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> lee on 2017-08-09 10:52:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">decode3Des</span><span class="params">(String key, String desStr, String token)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] keybyte = hex2byte(key);</span><br><span class="line">    <span class="keyword">byte</span>[] src = Base64.getDecoder().decode(desStr);</span><br><span class="line">    <span class="keyword">byte</span>[] ivs = hex2byte(token);</span><br><span class="line">    <span class="keyword">byte</span>[] iv2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">8</span>;i++) &#123;</span><br><span class="line">        iv2[i] = ivs[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Key deskey = <span class="keyword">null</span>;</span><br><span class="line">        Security.addProvider(<span class="keyword">new</span> BouncyCastleProvider());</span><br><span class="line">        <span class="comment">// 转化成JAVA的密钥格式</span></span><br><span class="line">        deskey = <span class="keyword">new</span> SecretKeySpec(keybyte, <span class="string">"desede"</span>);</span><br><span class="line">        Cipher cipher = Cipher.getInstance(<span class="string">"desede/CBC/PKCS7Padding"</span>);</span><br><span class="line">        cipher.init(Cipher.DECRYPT_MODE, deskey, <span class="keyword">new</span> IvParameterSpec(iv2));</span><br><span class="line">        String pwd = <span class="keyword">new</span> String(cipher.doFinal(src), <span class="string">"utf-8"</span>);</span><br><span class="line">        <span class="keyword">return</span> pwd;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e1) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(e1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 十六进制转二进制.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> hex 十六进制</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 二进制</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] hex2byte(String hex) &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] bts = <span class="keyword">new</span> <span class="keyword">byte</span>[hex.length() / <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; bts.length; i++) &#123;</span><br><span class="line">        bts[i] = (<span class="keyword">byte</span>) Integer.parseInt(hex.substring(<span class="number">2</span> * i, <span class="number">2</span> * i + <span class="number">2</span>), <span class="number">16</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bts;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/3DES-CBC-PKCS-7Padding加密解密/" data-id="cjwhlc9500003awuvx8881dy3" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-3DES-CBC-PKCS-5Padding加密解密" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/3DES-CBC-PKCS-5Padding加密解密/" class="article-date">
-  <time datetime="2019-06-04T06:38:49.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/3DES-CBC-PKCS-5Padding加密解密/">3DES/CBC/PKCS/5Padding加密解密</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>加解密的工具类SecurityDESUtil：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.codec.binary.Base64;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.crypto.Cipher;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKey;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKeyFactory;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.DESKeySpec;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.IvParameterSpec;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.SecretKeySpec;</span><br><span class="line"><span class="keyword">import</span> java.nio.charset.Charset;</span><br><span class="line"><span class="keyword">import</span> java.security.Security;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  解密工具类</span></span><br><span class="line"><span class="comment"> *  将AppKey转换为byte[]</span></span><br><span class="line"><span class="comment"> *   将Token转换为向量IV</span></span><br><span class="line"><span class="comment"> *  使用3des解密，运算模式CBC,填充模式PKCS7。获得解密后是byte[],使用utf8编码格式转换为字符串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityDESUtil</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SECRET_KEY = <span class="string">"DESede"</span>;</span><br><span class="line">    <span class="comment">//3des解密，运算模式CBC,填充模式PKCS7</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CIPHER = <span class="string">"DESede/CBC/PKCS5Padding"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset CHARSET = Charset.forName(<span class="string">"UTF-8"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span>  Cipher cipher = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span>  SecretKey key = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span>  &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(SecurityDESUtil.class)&#123;</span><br><span class="line">                cipher = Cipher.getInstance(CIPHER);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] getAppKey(String appKey) &#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">byte</span>[] appKeys = parseHexStr2Byte(appKey);</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">byte</span>[] tmpkey =&#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span> &#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> ii = <span class="number">0</span>; ii &lt; tmpkey.length; ii++)</span><br><span class="line">        &#123;</span><br><span class="line">            tmpkey[ii] = appKeys[ii];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tmpkey;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加密</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> iv</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> content</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> String <span class="title">encrypt</span><span class="params">(String appKey, String iv, String content)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] tmpKey = getAppKey(appKey);</span><br><span class="line">            key = <span class="keyword">new</span> SecretKeySpec(tmpKey, SECRET_KEY);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] tmpiv = getIv(iv);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] contentBytes = content.getBytes(CHARSET);</span><br><span class="line">            <span class="keyword">final</span>  IvParameterSpec ivParameterSpec = <span class="keyword">new</span> IvParameterSpec(tmpiv);</span><br><span class="line">            cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] bytes = cipher.doFinal(contentBytes);</span><br><span class="line">            <span class="keyword">return</span> Base64.encodeBase64String(bytes);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] getIv(String iv) &#123;</span><br><span class="line">        <span class="keyword">final</span>  <span class="keyword">byte</span>[] byteIv = parseHexStr2Byte(iv);</span><br><span class="line">        <span class="keyword">byte</span>[] tmpiv =&#123; <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span> &#125;;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tmpiv.length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            tmpiv[i] = byteIv[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tmpiv;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解密</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> iv</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> content</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> String <span class="title">decrypt</span><span class="params">(String appKey, String iv, String content)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] tmpKey = getAppKey(appKey);</span><br><span class="line">            key = <span class="keyword">new</span> SecretKeySpec(tmpKey, SECRET_KEY);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] byteIv = getIv(iv);</span><br><span class="line">            <span class="keyword">final</span> IvParameterSpec ivParameterSpec = <span class="keyword">new</span> IvParameterSpec(byteIv);</span><br><span class="line">            <span class="comment">// CBC requires an initialization vector</span></span><br><span class="line">            cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] decoderStr = Base64.decodeBase64(content);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">byte</span>[] bytes = cipher.doFinal(decoderStr,<span class="number">0</span>,decoderStr.length);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> String(bytes,CHARSET);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将二进制转换成16进制</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> buf</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>  String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> String <span class="title">parseByte2HexStr</span><span class="params">(<span class="keyword">byte</span> buf[])</span> </span>&#123;</span><br><span class="line">        StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; buf.length; i++) &#123;</span><br><span class="line">            String hex = Integer.toHexString(buf[i] &amp; <span class="number">0xFF</span>);</span><br><span class="line">            <span class="keyword">if</span> (hex.length() == <span class="number">1</span>) &#123;</span><br><span class="line">                hex = <span class="string">'0'</span> + hex;</span><br><span class="line">            &#125;</span><br><span class="line">            sb.append(hex.toUpperCase());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将16进制转换为二进制</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> hexStr</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>  byte[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] parseHexStr2Byte(String hexStr) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hexStr.length() &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] result = <span class="keyword">new</span> <span class="keyword">byte</span>[hexStr.length()/<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i&lt; hexStr.length()/<span class="number">2</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> high = Integer.parseInt(hexStr.substring(i*<span class="number">2</span>, i*<span class="number">2</span>+<span class="number">1</span>), <span class="number">16</span>);</span><br><span class="line">            <span class="keyword">int</span> low = Integer.parseInt(hexStr.substring(i*<span class="number">2</span>+<span class="number">1</span>, i*<span class="number">2</span>+<span class="number">2</span>), <span class="number">16</span>);</span><br><span class="line">            result[i] = (<span class="keyword">byte</span>) (high * <span class="number">16</span> + low);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://zzuhai.github.io/2019/06/04/3DES-CBC-PKCS-5Padding加密解密/" data-id="cjwhlc94g0000awuv2gzf05lm" class="article-share-link">Share</a>
+      <a data-url="http://zzuhai.github.io/2019/06/04/Java多线程一篇就够了/" data-id="cjwil3pmj0029akuv9k67myw1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
@@ -762,7 +818,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/groovy/">groovy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nexus/">nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/groovy/">groovy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nexus/">nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
     </div>
   </div>
 
@@ -772,7 +828,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a>
+      <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/MQ/" style="font-size: 18px;">MQ</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/groovy/" style="font-size: 10px;">groovy</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/nexus/" style="font-size: 12px;">nexus</a> <a href="/tags/socket/" style="font-size: 10px;">socket</a> <a href="/tags/spring-boot/" style="font-size: 12px;">spring boot</a> <a href="/tags/spring-cloud/" style="font-size: 16px;">spring cloud</a> <a href="/tags/数据库/" style="font-size: 14px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 14px;">数据结构</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
     </div>
   </div>
 
@@ -794,6 +850,14 @@
       <ul>
         
           <li>
+            <a href="/2019/06/05/Mysql优化/">Mysql优化</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/05/设计模式是什么/">设计模式是什么</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/熔断器Hystrix配置及使用/">熔断器Hystrix配置及使用</a>
           </li>
         
@@ -803,14 +867,6 @@
         
           <li>
             <a href="/2019/06/04/红黑树/">红黑树</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/RSA加密使用详解/">RSA加密使用详解</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/cron表达式详解/">cron表达式详解</a>
           </li>
         
       </ul>
